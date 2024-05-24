@@ -1,48 +1,47 @@
-import React, { useState } from 'react';
-import './Carousel.css';
+import { useState } from "react";
+import CarouselCompStyle from "./css/Carousel.module.css";
 
-interface Card {
-  id: number;
-  title: string;
-  subtitle: string;
-  description: string;
-  imageUrl: string;
+interface CarouselProps<T> {
+  items: T[];
+  renderCard: (item: T) => JSX.Element;
 }
 
-interface CarouselProps {
-  cards: Card[];
-  renderCard: (card: Card) => JSX.Element;
-}
-
-const CarouselComp: React.FC<CarouselProps> = ({ cards, renderCard }) => {
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+const CarouselComp = <T,>({
+  items,
+  renderCard,
+}: CarouselProps<T>): JSX.Element => {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const goToPreviousCard = () => {
-    setCurrentCardIndex((prevIndex) =>
-      prevIndex === 0 ? cards.length - 1 : prevIndex - 1
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? items.length - 1 : prevIndex - 1
     );
   };
 
   const goToNextCard = () => {
-    setCurrentCardIndex((prevIndex) =>
-      prevIndex === cards.length - 1 ? 0 : prevIndex + 1
+    setCurrentIndex((prevIndex) =>
+      prevIndex === items.length - 1 ? 0 : prevIndex + 1
     );
   };
 
   return (
-    <div className="carousel">
-      <button onClick={goToPreviousCard} className="prev">
+    <div className={CarouselCompStyle.carousel}>
+      <button onClick={goToPreviousCard} className={CarouselCompStyle.prev}>
         &#10094;
       </button>
-      {cards.map((card, index) => (
+      {items.map((item, index) => (
         <div
-          key={card.id}
-          className={index === currentCardIndex ? 'card-slide active' : 'card-slide'}
+          key={index}
+          className={
+            index === currentIndex || index === (currentIndex + 1)
+              ? `${CarouselCompStyle.card_slide} ${CarouselCompStyle.active}`
+              : `${CarouselCompStyle.card_slide}`
+          }
         >
-          {renderCard(card)}
+          {renderCard(item)}
         </div>
       ))}
-      <button onClick={goToNextCard} className="next">
+      <button onClick={goToNextCard} className={CarouselCompStyle.next}>
         &#10095;
       </button>
     </div>

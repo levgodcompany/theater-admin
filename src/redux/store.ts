@@ -1,9 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import colorReducer from './slices/colorSlice';
+import ownerReducer from './slices/Owner.slice';
+import tokenReducer from './slices/token.slice';
+import LocalIDReducer from './slices/LocalID.slice';
 
 const store = configureStore({
   reducer: {
-    colors: colorReducer
+    owner: ownerReducer,
+    token: tokenReducer,
+    localID: LocalIDReducer
   },
 });
 

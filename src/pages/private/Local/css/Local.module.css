@@ -1,0 +1,30 @@
+.main_container {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.container {
+
+}
+
+.container_info{
+    
+}
+
+.container_header_image{
+    max-width: 250px;
+}
+
+.container_image {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    position: relative;
+}
+
+.container_image_img{
+    height: 100%;
+    left: 50%;
+    position: absolute;
+    transform: translateX(-50%);
+}
