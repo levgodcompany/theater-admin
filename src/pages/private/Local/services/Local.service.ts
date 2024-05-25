@@ -1,4 +1,7 @@
-import { initialStateLocalID, LocalIDKey } from "../../../../redux/slices/LocalID.slice";
+import {
+  initialStateLocalID,
+  LocalIDKey,
+} from "../../../../redux/slices/LocalID.slice";
 import {
   axiosInstance,
   JsonResponseToken,
@@ -40,12 +43,30 @@ export interface IImage {
 }
 
 // Define tu token JWT
-const localID: ILocalID = getLocalStorage(LocalIDKey) ? JSON.parse(getLocalStorage(LocalIDKey) as string) : initialStateLocalID
+const localID: ILocalID = getLocalStorage(LocalIDKey)
+  ? JSON.parse(getLocalStorage(LocalIDKey) as string)
+  : initialStateLocalID;
 
 export const getLocal = async () => {
   try {
     const response = await axiosInstance.get<JsonResponseToken<ILocal>>(
       `local/local/${localID.id}`
+    );
+    const data = response.data;
+    console.log(data);
+
+    return data.data;
+  } catch (error) {
+    console.error("Error loging in:", error);
+    // Manejar el error de forma adecuada
+  }
+};
+
+export const editLocal = async (local: Partial<ILocal>) => {
+  try {
+    const response = await axiosInstance.put<JsonResponseToken<ILocal>>(
+      `local/local/${localID.id}`,
+      { ...local }
     );
     const data = response.data;
     console.log(data);

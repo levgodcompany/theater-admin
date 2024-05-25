@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import ServiceStyle from './css/ServicesList.module.css';
-import editImage from '../../assets/edit-3-svgrepo-com.svg'
-import ServicesModal from '../Forms/ServicesListForm/ServicesListForm';
+import editImage from '../../../Local/assets/edit-3-svgrepo-com.svg'
 
 interface ServicesListProps {
   services: string[];
@@ -29,14 +28,9 @@ const ServicesList: React.FC<ServicesListProps> = ({ services }) => {
   return (
     <div className={ServiceStyle.services_list}>
       <div className={ServiceStyle.header}>
-        <h2>Servicios que ofrece el local</h2>
+        <h2>Servicios que ofrece la sala</h2>
         <img onClick={handleOpenModal} src={editImage} alt="" /> 
-        <ServicesModal
-        services={services}
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        onSubmit={handleSubmit}
-      />
+
       </div>
       <ul>
         {services.map((service, index) => (

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import HighlightedImagesStyle from './css/HighlightedImages.module.css';
-import { IImage } from '../../services/Local.service';
-import deleteImage from '../../assets/delete-svgrepo-com.svg'
-import editImage from '../../assets/edit-3-svgrepo-com.svg'
-import ImageFormModal from '../Forms/HighlightedImagesForm/HighlightedImagesForm';
+import deleteImage from '../../../Local/assets/delete-svgrepo-com.svg'
+import editImage from '../../../Local/assets/edit-3-svgrepo-com.svg'
+import { IImage } from '../../../Local/services/Local.service';
 
 interface HighlightedImagesProps {
     images: IImage[];
@@ -24,13 +23,8 @@ const HighlightedImages: React.FC<HighlightedImagesProps> = ({ images, onDelete,
     return (
       <div className={HighlightedImagesStyle.container}>
       <div className={HighlightedImagesStyle.header}>
-        <h2>Imagenes del local</h2>
+        <h2>Imagenes de la sala</h2>
         <img onClick={() => setModalOpen(true)} src={editImage} alt="" />
-        <ImageFormModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSave={handleSave}
-      />
       </div>
 
       <div className={HighlightedImagesStyle.highlighted_images_grid}>

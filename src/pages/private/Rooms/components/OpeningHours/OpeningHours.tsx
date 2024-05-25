@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import OpeningHoursStyle from "./css/OpeningHours.module.css";
-import editImage from '../../assets/edit-3-svgrepo-com.svg'
-import OpeningHoursModal from "../Forms/OpeningHoursForm/OpeningHoursForm";
+import editImage from '../../../Local/assets/edit-3-svgrepo-com.svg'
 
 export interface IOpeningCloseHours {
   isOpen: boolean;
@@ -55,11 +54,7 @@ const OpeningHours: React.FC<OpeningHoursProps> = ({ openingDays }) => {
       <div className={OpeningHoursStyle.header}>
         <h2>Horarios</h2>
         <img onClick={handleOpenModal} src={editImage} alt="" /> 
-        <OpeningHoursModal
-        isOpen={isModalOpen}
-        onRequestClose={handleCloseModal}
-        onSubmit={handleSubmit}
-      />
+
       </div>
       {days.map((day, index) => (
         <div key={index} className={OpeningHoursStyle.opening_hours_day}>

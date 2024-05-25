@@ -1,22 +1,19 @@
 import InfoLocalStyles from "./css/InfoLocal.module.css";
 import "./css/info.css";
-import editImage from "../../assets/edit-3-svgrepo-com.svg";
+import editImage from "../../../Local/assets/edit-3-svgrepo-com.svg";
 import { useState } from "react";
-import LocalForm from "../Forms/LocalForm/LocalForm";
 export interface PropsCard {
   image: string;
   title: string;
-  email: string;
+  capacity: string | number;
   phone: string;
-  address: string;
   description: string;
 }
 
-const InfoLocal: React.FC<PropsCard> = ({
+const InfoRoom: React.FC<PropsCard> = ({
   title,
-  email,
+  capacity,
   phone,
-  address,
   image,
   description,
 }) => {
@@ -44,21 +41,13 @@ const InfoLocal: React.FC<PropsCard> = ({
         <div className={InfoLocalStyles.header_title}>
           <h2>{title}</h2>
           <img onClick={handleOpenModal} src={editImage} alt="" />
-          <LocalForm
-            isOpen={isModalOpen}
-            onRequestClose={handleCloseModal}
-            onSubmit={handleSubmit}
-          />
         </div>
         <div className={InfoLocalStyles.user_info_info}>
           <p>
-            <strong>Email:</strong> {email}
+            <strong>Capacidad:</strong> {capacity}
           </p>
           <p>
             <strong>Phone:</strong> {phone}
-          </p>
-          <p>
-            <strong>Address:</strong> {address}
           </p>
         </div>
         <p className={InfoLocalStyles.description}>{description}</p>
@@ -67,4 +56,4 @@ const InfoLocal: React.FC<PropsCard> = ({
   );
 };
 
-export default InfoLocal;
+export default InfoRoom;

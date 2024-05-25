@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../../../components/Sidebar/Sidebar";
-import { useAppDispatch } from "../../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { getLocal, IImage, ILocal } from "./services/Local.service";
 import { Header } from "../../../components/Header/Header";
 import LocalStyle from "./css/Local.module.css";
@@ -8,11 +8,14 @@ import Card from "./Components/Card_B/InfoLocal";
 import HighlightedImages from "./Components/HighlightedImages/HighlightedImages";
 import OpeningHours from "./Components/OpeningHours/OpeningHours";
 import ServicesList from "./Components/ServicesList/ServicesList";
+import { createLocal } from "../../../redux/slices/Local.slice";
 
 const Local = () => {
   const dispatch = useAppDispatch();
 
-  const [local, setLocal] = useState<ILocal | null>(null);
+  //const [local, setLocal] = useState<ILocal | null>(null);
+
+  const local = useAppSelector((state) => state.local);
 
   const getLocalLoad = async () => {
     const res = await getLocal();
@@ -88,8 +91,8 @@ const Local = () => {
       }));
 
       res.additionalImages = transformedImages;
-
-      setLocal(res);
+      dispatch(createLocal(res))
+  //    setLocal(res);
     }
   };
 
