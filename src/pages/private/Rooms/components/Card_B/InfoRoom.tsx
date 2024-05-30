@@ -1,5 +1,4 @@
 import InfoLocalStyles from "./css/InfoLocal.module.css";
-import "./css/info.css";
 import editImage from "../../../Local/assets/edit-3-svgrepo-com.svg";
 import { useState } from "react";
 export interface PropsCard {

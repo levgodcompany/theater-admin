@@ -1,0 +1,66 @@
+.modal_overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 350px;
+  overflow: auto;
+}
+
+.container{
+
+}
+
+.container_form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.from_title, .date_start, .date_end{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.from_title > input, .date_start > input, .date_end > input{
+  padding: 5px;
+  width: 165px;
+}
+
+.container_date{
+
+}
+
+.date_start{
+
+}
+
+.date_end {
+
+}
+
+.container_info {
+  display: flex;
+  flex-direction: column;
+}

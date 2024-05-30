@@ -1,31 +1,43 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import "./css/AppointmentModal.css";
+import { getClientAppointment, IAppointment, IClient } from "../../services/Rooms.service";
 
-interface IAppointment {
-  date: Date; // Fecha y hora del turno
-  start: Date; // Hora de entrada
-  end: Date; // Hora de salida
-  title: string; // Título del turno
-  description: string; // Descripción del turno
-}
 
 interface AppointmentModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   appointment: IAppointment | null;
+  idRoom: string
 }
 
 const AppointmentModal: React.FC<AppointmentModalProps> = ({
   isOpen,
   onRequestClose,
   appointment,
+  idRoom
 }) => {
+
+ // const [client, setClient] = useState<IClient[]>([]);
   if (!appointment) return null;
 
-  useEffect(() => {
-    console.log("estado", isOpen);
-  }, [isOpen]);
+ /* const getClient = async ()=> {
+    const cl: IClient [] = [];
+    if(appointment.client){
+      const c = await getClientAppointment(idRoom, appointment.client[0], appointment._id);
+      if(c){
+        cl.push(c);
+      }
+      setClient(cl);
+    }
+  }
+*/
+
+  useEffect(()=> {
+    //getClient();
+    console.log("idRoom:",idRoom, appointment.client, "appointment._id:",appointment._id)
+  }, [])
+
 
   return (
     <Modal
@@ -47,15 +59,19 @@ const AppointmentModal: React.FC<AppointmentModalProps> = ({
         </p>
         <p>
           <strong>Hora de entrada:</strong>{" "}
-          {appointment.start.toLocaleTimeString()}
+          {appointment.start.getHours()}:{appointment.start.getMinutes()} 
         </p>
         <p>
           <strong>Hora de salida:</strong>{" "}
-          {appointment.end.toLocaleTimeString()}
+          {appointment.end.getHours()}:{appointment.end.getMinutes()} 
         </p>
         <p>
           <strong>Descripción:</strong> {appointment.description}
         </p>
+
+        <div>
+        </div>
+
       </div>
       <div className="modalFooter">
         <button className="actionButton" onClick={onRequestClose}>

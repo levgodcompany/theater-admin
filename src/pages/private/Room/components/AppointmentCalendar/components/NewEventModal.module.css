@@ -1,0 +1,140 @@
+.modal_overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+  }
+  
+  .modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 4px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 350px;
+    overflow: auto;
+  }
+
+.container{
+
+}
+
+.container_form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.date_start {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.date_hour{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.container_image_hour {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    padding-right: 20px;
+}
+
+.container_image_description {
+    margin: 0;
+    padding: 0;
+    display: inline;
+    padding-right: 20px;
+}
+
+.image_hour {
+
+}
+
+.date_hour > input {
+    border: none;
+    display: flex;
+    color: #686b6e;
+    padding: 10px;
+}
+
+
+.from_title {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.from_title > input {
+    border: none;
+    border-bottom: 1px solid #dbdbdb;
+    width: 57%;
+    font-size: 22px;
+}
+
+
+
+.container_date{
+
+}
+
+.date_start{
+
+}
+
+.date_end {
+
+}
+
+.container_info {
+    display: flex;
+    flex-direction: row;
+}
+
+.container_info_description {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.container_info_description > textarea {
+    padding: 10px;
+    border: none;
+    resize: vertical;
+    height: 100px;
+    background-color: #f1f3f4;
+    border-radius: 5px;
+}
+
+
+
+
+input:focus, textarea:focus {
+    outline: none;
+    box-shadow: none; /* Elimina el borde de enfoque predeterminado */
+  }
+  
+  /* Estilo opcional para el enfoque */
+  input:focus, textarea:focus {
+    outline: none;
+    border: 1px solid #dbdbdb;
+  }
+  

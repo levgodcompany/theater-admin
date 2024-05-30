@@ -3,7 +3,7 @@ import CarouselCompStyle from "./css/Carousel.module.css";
 
 interface CarouselProps<T> {
   items: T[];
-  renderCard: (item: T) => JSX.Element;
+  renderCard: (item: T, index?: number) => JSX.Element;
 }
 
 const CarouselComp = <T,>({
@@ -25,25 +25,39 @@ const CarouselComp = <T,>({
   };
 
   return (
-    <div className={CarouselCompStyle.carousel}>
-      <button onClick={goToPreviousCard} className={CarouselCompStyle.prev}>
-        &#10094;
-      </button>
-      {items.map((item, index) => (
-        <div
-          key={index}
-          className={
-            index === currentIndex || index === (currentIndex + 1)
-              ? `${CarouselCompStyle.card_slide} ${CarouselCompStyle.active}`
-              : `${CarouselCompStyle.card_slide}`
-          }
-        >
-          {renderCard(item)}
-        </div>
-      ))}
-      <button onClick={goToNextCard} className={CarouselCompStyle.next}>
-        &#10095;
-      </button>
+    <div>
+      {items.length > 0 ? (
+        <>
+          <div>
+            {items.length > 0 ? currentIndex + 1 : 0}/{items.length}
+          </div>
+          <div className={CarouselCompStyle.carousel}>
+            <button
+              onClick={goToPreviousCard}
+              className={CarouselCompStyle.prev}
+            >
+              &#10094;
+            </button>
+            {items.map((item, index) => (
+              <div
+                key={index}
+                className={
+                  index === currentIndex
+                    ? `${CarouselCompStyle.card_slide} ${CarouselCompStyle.active}`
+                    : `${CarouselCompStyle.card_slide}`
+                }
+              >
+                {renderCard(item, index)}
+              </div>
+            ))}
+            <button onClick={goToNextCard} className={CarouselCompStyle.next}>
+              &#10095;
+            </button>
+          </div>
+        </>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

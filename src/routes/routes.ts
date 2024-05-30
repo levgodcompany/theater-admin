@@ -10,5 +10,7 @@ export const PrivateRoutes = {
   HOME: "home",
   LOCAL: "local",
   ROOMS: "rooms",
+  ROOM: "room",
   CLIENTS: "clients",
+  SHIFTS: "shifts"
 };

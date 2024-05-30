@@ -54,6 +54,9 @@ const Sidebar = () => {
                   <li  onClick={()=> redirect(PrivateRoutes.ROOMS)} className={SidebarStyle.li_container}>
                     <span>Rooms</span>
                   </li>
+                  <li  onClick={()=> redirect(PrivateRoutes.SHIFTS)} className={SidebarStyle.li_container}>
+                    <span>Turnos</span>
+                  </li>
                   <li onClick={()=> redirect(PrivateRoutes.CLIENTS)} className={SidebarStyle.li_container}>
                     <span>Clients</span>
                   </li>

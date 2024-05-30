@@ -1,4 +1,4 @@
-.rooms-container {
+.rooms_container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -6,7 +6,7 @@
   padding: 20px 0;
 }
 
-.room-details, .container-button-new {
+.room_details, .containerbutton_new {
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -16,7 +16,11 @@
 }
 
 
-.container-button-new {
+.container_button_new {
   text-align: center;
+  padding: 20px;
+}
+
+.room_calendar {
   padding: 20px;
 }
