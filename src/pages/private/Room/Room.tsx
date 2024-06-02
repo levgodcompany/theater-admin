@@ -6,6 +6,7 @@ import { IAppointment, IRoom } from "../Rooms/services/Rooms.service";
 import { getRoomHTTP } from "./service/Room.service";
 import AppointmentCalendar from "./components/AppointmentCalendar/AppointmentCalendar";
 import RoomStyle from "./css/Room.module.css"
+import Sidebar from "../../../components/Sidebar/Sidebar";
 
 interface ISelects {
   id: string;
@@ -123,6 +124,7 @@ const Room = () => {
   return (
     <>
       <Header />
+      <Sidebar />
 
       <div className={RoomStyle.room_container}>
         <div key={room.name} className={RoomStyle.container_room}>

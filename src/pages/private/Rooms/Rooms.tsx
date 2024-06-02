@@ -8,7 +8,8 @@ import OpeningHours from "./components/OpeningHours/OpeningHours";
 import ServicesList from "./components/ServicesList/ServicesList";
 import HighlightedImages from "./components/HighlightedImages/HighlightedImages";
 import { getRoomsHTTP, IRoom } from "./services/Rooms.service";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 
 const RoomDetails = () => {
   const [rooms, setRooms] = useState<IRoom[]>();
@@ -24,10 +25,17 @@ const RoomDetails = () => {
     getRooms();
   }, []);
 
+
+  const componentRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
+
   return (
     <>
       <Header />
       <Sidebar />
+      <div ref={componentRef}>
       {rooms ? (
         <>
           <div className={RoomsStyle.rooms_container}>
@@ -65,6 +73,9 @@ const RoomDetails = () => {
       ) : (
         <></>
       )}
+
+<button onClick={handlePrint}>Imprimir</button>
+      </div>
     </>
   );
 };

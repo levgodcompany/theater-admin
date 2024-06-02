@@ -11,17 +11,13 @@ import AppointmentModal from "../AppointmentModal/AppointmentModal";
 import AppointmentCalendarStyle from "./css/AppointmentCalendar.module.css";
 import NewEventModal from "./components/NewEventModal";
 import { IAppointment } from "../../../Rooms/services/Rooms.service";
+import { deleteAppointmentHTTP, postAppointmentHTTP, putAppointmentHTTP } from "../../service/Room.service";
 
 interface CalendarProps {
   _appointments: IAppointment[];
   idRoom: string;
 }
 
-interface IShift {
-  prevStart: Date;
-  prevEnd: Date;
-  shift: IAppointment;
-}
 
 const localizer = momentLocalizer(moment);
 
@@ -29,14 +25,11 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
   _appointments,
   idRoom,
 }) => {
+  // Event, variable para poder mostrar todos los eventos que hay
   const [events, setEvents] = useState<CalendarEvent[]>([]);
+
+  // Appointments, variable donde tenemos todo los turnos en la base de datos
   const [appointments, setAppointments] = useState<IAppointment[]>([]);
-
-  // Estado para agregar nuevos datos
-  const [newsEvents, setNewsEvents] = useState<IShift[]>([]);
-
-   // Estado para editar datos
-   const [editEvents, setEditEvents] = useState<IShift[]>([]);
 
   // Mostramos el modal para crear un nuevo evento
   const [newEventModalOpen, setNewEventModalOpen] = useState(false);
@@ -56,6 +49,8 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
     end: new Date(),
     start: new Date(),
     title: "",
+    GuestListClient: [],
+    GuestListNotClient: []
   });
 
   const handleEventClick = (event: CalendarEvent) => {
@@ -64,6 +59,8 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         app.title === event.title &&
         app.start.getTime() === (event.start as Date).getTime()
     );
+
+    console.log("handleEventClick", appointments)
 
     if (appointment) {
       setSelectedAppointment(appointment);
@@ -83,11 +80,13 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
       available: false,
       client: null,
       date: start,
+      GuestListClient: [],
+      GuestListNotClient: []
     });
     setNewEventModalOpen(true);
   };
 
-  const handleNewEventSave = (prevStart: Date, prevEnd: Date, event: IAppointment) => {
+  const handleNewEventSave = async (event: IAppointment) => {
     const e: CalendarEvent = {
       title: event.title,
       start: new Date(event.start),
@@ -99,107 +98,95 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         client: event.client,
       },
     };
-    setNewsEvents((prev) => [...prev, {
-      prevEnd,
-      prevStart,
-      shift: event
-    }]);
-    setEvents([...events, e]);
-    setAppointments((prev) => [...prev, event]);
+    const rest = await postAppointmentHTTP(idRoom, event);
+    console.log("rest", rest)
+    if(rest) {
+
+      const app: IAppointment[] = rest.map((appointment) => ({
+        _id: appointment._id,
+        date: new Date(appointment.date),
+        start: new Date(appointment.start),
+        end: new Date(appointment.end),
+        title: appointment.title,
+        description: appointment.description,
+        available: appointment.available,
+        client: appointment.client,
+        GuestListClient: appointment.GuestListClient,
+        GuestListNotClient: appointment.GuestListNotClient
+      }));
+
+      setEvents([...events, e]);
+      setAppointments(app)
+
+    }
     setNewEventModalOpen(false);
   };
 
-  const handleEditEventSave = (
-    prevStart: Date,
-    prevEnd: Date,
-    event: IAppointment
-  ) => {
-    const e: CalendarEvent = {
-      title: event.title,
-      start: new Date(event.start),
-      end: new Date(event.end),
-      allDay: false,
-      resource: {
-        description: event.description,
-        available: event.available,
-        client: event.client,
-      },
-    };
+  const handleEditEventSave = async (event: IAppointment ) => {
+    const rest = await putAppointmentHTTP(idRoom, event._id, event);
+    if(rest) {
 
-    const indexNewsEvent = newsEvents.findIndex(
-      (app) =>
-        app.prevStart.getTime() === (prevStart as Date).getTime() &&
-        app.prevEnd.getTime() === (prevEnd as Date).getTime()
-    );
+      const _events: CalendarEvent[] = rest.map((appointment) => ({
+        title: appointment.title,
+        start: new Date(appointment.start),
+        end: new Date(appointment.end),
+        allDay: false,
+        resource: {
+          description: appointment.description,
+          available: appointment.available,
+          client: appointment.client,
+        },
+      }));
 
-    if (indexNewsEvent != -1) {
-      setNewsEvents((prev) => {
-        const index = prev.map((app, index) => {
-          return index == indexEvent ? {
-            prevEnd,
-            prevStart,
-            shift: event
-          } : app;
-        });
-        return [...index];
-      });
+      const app: IAppointment[] = rest.map((appointment) => ({
+        _id: appointment._id,
+        date: new Date(appointment.date),
+        start: new Date(appointment.start),
+        end: new Date(appointment.end),
+        title: appointment.title,
+        description: appointment.description,
+        available: appointment.available,
+        client: appointment.client,
+        GuestListClient: appointment.GuestListClient,
+        GuestListNotClient: appointment.GuestListNotClient
+      }));
+      setAppointments(app);
+      setEvents([..._events]);
     }
 
-    const indexEditEvent = editEvents.findIndex(
-      (app) =>
-        app.prevStart.getTime() === (prevStart as Date).getTime() &&
-        app.prevEnd.getTime() === (prevEnd as Date).getTime()
-    );
+    setModalIsOpen(false);
+  };
 
-    if (indexEditEvent != -1) {
-      setEditEvents((prev) => {
-        const index = prev.map((app, index) => {
-          return index == indexEvent ? {
-            prevEnd,
-            prevStart,
-            shift: event
-          } : app;
-        });
-        return [...index];
-      });
-    }
+  const handleDeleteEvent = async (id: string ) => {
+    const rest = await deleteAppointmentHTTP(idRoom, id);
+    if(rest) {
 
-    const indexEvent = events.findIndex(
-      (app) =>
-        app.start?.getTime() === (prevStart as Date).getTime() &&
-        app.end?.getTime() === (prevEnd as Date).getTime()
-    );
+      const _events: CalendarEvent[] = rest.map((appointment) => ({
+        title: appointment.title,
+        start: new Date(appointment.start),
+        end: new Date(appointment.end),
+        allDay: false,
+        resource: {
+          description: appointment.description,
+          available: appointment.available,
+          client: appointment.client,
+        },
+      }));
 
-    if (indexEvent != -1) {
-      setEvents((prev) => {
-        const index = prev.map((app, index) => {
-          return index == indexEvent ? e : app;
-        });
-        return [...index];
-      });
-    }
-
-    const indexAppointment = appointments.findIndex(
-      (app) =>
-        app.start?.getTime() === (prevStart as Date).getTime() &&
-        app.end?.getTime() === (prevEnd as Date).getTime()
-    );
-
-    if (indexAppointment != -1) {
-      setAppointments((prev) => {
-        const index = prev.map((app, index) => {
-          return index == indexEvent ? event : app;
-        });
-        return [...index];
-      });
-    }
-
-    if(indexNewsEvent == -1 && indexEditEvent == -1){
-      setEditEvents((prev) => [...prev, {
-        prevEnd,
-        prevStart,
-        shift: event
-      }]);
+      const app: IAppointment[] = rest.map((appointment) => ({
+        _id: appointment._id,
+        date: new Date(appointment.date),
+        start: new Date(appointment.start),
+        end: new Date(appointment.end),
+        title: appointment.title,
+        description: appointment.description,
+        available: appointment.available,
+        client: appointment.client,
+        GuestListClient: appointment.GuestListClient,
+        GuestListNotClient: appointment.GuestListNotClient
+      }));
+      setAppointments(app);
+      setEvents([..._events]);
     }
 
     setModalIsOpen(false);
@@ -227,26 +214,20 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
       description: appointment.description,
       available: appointment.available,
       client: appointment.client,
+      GuestListClient: appointment.GuestListClient,
+      GuestListNotClient: appointment.GuestListNotClient
     }));
 
     setEvents([..._events]);
     setAppointments([...app]);
   }, [_appointments]);
 
-  useEffect(() => {
-    console.log("newsEvents", newsEvents.length);
-  }, [newsEvents]);
-
-  useEffect(() => {
-    console.log("editEvents", editEvents.length);
-  }, [editEvents]);
-
   const eventPropGetter = (event: CalendarEvent) => {
-    let backgroundColor = "grey";
+    let backgroundColor = "#B0BEC5";
     if (event.resource.client && event.resource.client.length > 0) {
-      backgroundColor = "blue";
+      backgroundColor = "#F44336";
     } else if (event.resource.available) {
-      backgroundColor = "green";
+      backgroundColor = "#4CAF50";
     }
     return {
       style: { backgroundColor },
@@ -276,6 +257,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
           event={selectedAppointment}
           onRequestClose={() => setModalIsOpen(false)}
           onSave={handleEditEventSave}
+          onDelet={handleDeleteEvent}
         />
         {/* Modal para nuevo evento */}
         {newEventModalOpen && newEvent && (
