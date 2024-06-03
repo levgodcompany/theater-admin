@@ -97,26 +97,18 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  padding-bottom: 30px;
 }
 
-.container_info_description > textarea {
-  padding: 10px;
-  border: none;
-  resize: vertical;
-  height: 100px;
-  background-color: #f1f3f4;
-  border-radius: 5px;
-}
 
-input:focus,
-textarea:focus {
+
+input:focus{
   outline: none;
   box-shadow: none; /* Elimina el borde de enfoque predeterminado */
 }
 
 /* Estilo opcional para el enfoque */
-input:focus,
-textarea:focus {
+input:focus {
   outline: none;
 }
 
@@ -213,4 +205,27 @@ input {
 .container_buttons {
   display: flex;
   justify-content: space-between;
+}
+
+
+
+.container_print {
+  position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    top: 0;
+    background-color: red;
+}
+
+
+.container_capacity_max {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 15px;
+}
+
+.container_capacity_max > span {
+  font-size: 11px;
+  color: #686b6e;
 }

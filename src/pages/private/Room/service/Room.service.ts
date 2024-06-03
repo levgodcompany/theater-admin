@@ -110,4 +110,38 @@ export const deleteAppointmentHTTP = async (idRoom: string, appointmentId: strin
     console.error("Error loging in:", error);
     // Manejar el error de forma adecuada
   }
-};
+}
+
+export interface AppointmentClientDTO {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+}
+
+export const getAppointmentClientsHTTP = async (idRoom: string, appointmentId: string) => {
+  try {
+    const response = await axiosInstance.get<JsonResponseToken<AppointmentClientDTO[]>>(`appointments/appointment-all-clients/room/${idRoom}/appointment/${appointmentId}`);
+    const data = response.data;
+    console.log("clients app", data)
+
+    return data.data;
+  } catch (error) {
+    console.error("Error loging in:", error);
+    // Manejar el error de forma adecuada
+  }
+}
+
+
+export const getAppointmentClientOrganizadorHTTP = async (idRoom: string, appointmentId: string) => {
+  try {
+    const response = await axiosInstance.get<JsonResponseToken<AppointmentClientDTO>>(`appointments/organizador/room/${idRoom}/appointment/${appointmentId}`);
+    const data = response.data;
+    console.log("clients app", data)
+
+    return data.data;
+  } catch (error) {
+    console.error("Error loging in:", error);
+    // Manejar el error de forma adecuada
+  }
+}

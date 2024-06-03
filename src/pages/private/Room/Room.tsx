@@ -7,6 +7,8 @@ import { getRoomHTTP } from "./service/Room.service";
 import AppointmentCalendar from "./components/AppointmentCalendar/AppointmentCalendar";
 import RoomStyle from "./css/Room.module.css"
 import Sidebar from "../../../components/Sidebar/Sidebar";
+import DateSelector from "./components/DateSelector/DateSelector";
+import MyCalendar from "./components/AppointmentSelector/AppointmentSelector";
 
 interface ISelects {
   id: string;
@@ -110,9 +112,6 @@ const Room = () => {
       if (idRoom) {
         const res = await getRoomHTTP(idRoom);
         if (res) {
-          //setSelectedDateList(
-          //  convertAppointmentsToSelects(res.availableAppointments)
-          //);
           setRoom(res);
         }
       }
@@ -120,6 +119,10 @@ const Room = () => {
 
     get();
   }, []);
+
+  useEffect(()=> {
+    setSelectedDateList(convertAppointmentsToSelects(room.availableAppointments))
+  }, [room.availableAppointments])
 
   return (
     <>
@@ -139,8 +142,12 @@ const Room = () => {
             <AppointmentCalendar
               _appointments={room.availableAppointments}
               idRoom={room._id}
+              nameRoom={room.name}
+              capacity={room.capacity}
             />
           </div>
+
+
          
         </div>
       </div>

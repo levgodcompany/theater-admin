@@ -13,12 +13,15 @@ import {
   getClientsRegisterHTTP,
   postNotClientsHTTP,
 } from "../../../service/Room.service";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 interface NewEventModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   onSave: (event: IAppointment) => void;
   event: IAppointment;
+  capacity: number;
 }
 
 const NewEventModal: React.FC<NewEventModalProps> = ({
@@ -27,6 +30,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   onSave,
   event,
 }) => {
+  const capacity = 3;
   const [title, setTitle] = useState(event.title || "");
   const [available, setAvailable] = useState<boolean>(event.available);
   const [description, setDescription] = useState(event.description || "");
@@ -84,7 +88,12 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   };
 
   const handleOptionClick = (client: ClientDTO) => {
-    if (!selectedClients.some((selectedClient) => selectedClient.id === client.id)) {
+    if (
+      !selectedClients.some(
+        (selectedClient) => selectedClient.id === client.id
+      ) &&
+      selectedClients.length + 2 <= capacity
+    ) {
       setSelectedClients((prev) => [...prev, client]);
     }
     setInputValue("");
@@ -129,7 +138,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   };
 
   const handleAddNewClient = () => {
-    if (isValidEmail(inputValue)) {
+    if (isValidEmail(inputValue) && selectedClients.length + 2 <= capacity) {
       const newClient: ClientDTO = {
         id: "",
         name: "",
@@ -154,10 +163,11 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   };
 
   const handleSave = () => {
-    const idClientOrg = selectedClientOrganizer.id == "" ? null : selectedClientOrganizer.id;
+    const idClientOrg =
+      selectedClientOrganizer.id == "" ? null : selectedClientOrganizer.id;
     const idSelectClients: string[] = [];
     const idSelectNotClients: string[] = [];
-    
+
     selectedClients.forEach((client) => {
       if (client.isRegister) {
         idSelectClients.push(client.id);
@@ -166,23 +176,26 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
       }
     });
 
-    if((idClientOrg == null) && (idSelectClients.length > 0 || idSelectNotClients.length > 0)){
-      alert("Tienes que agregar a un Organiizador, para poder invitar a mas gente")
-    }else {
-      onSave({ 
-        ...event, 
-        title, 
-        start, 
-        end, 
-        description, 
-        available, 
-        client: idClientOrg, 
-        GuestListClient: idSelectClients, 
-        GuestListNotClient: idSelectNotClients 
+    if (
+      idClientOrg == null &&
+      (idSelectClients.length > 0 || idSelectNotClients.length > 0)
+    ) {
+      alert(
+        "Tienes que agregar a un Organiizador, para poder invitar a mas gente"
+      );
+    } else {
+      onSave({
+        ...event,
+        title,
+        start,
+        end,
+        description,
+        available,
+        client: idClientOrg,
+        GuestListClient: idSelectClients,
+        GuestListNotClient: idSelectNotClients,
       });
-
     }
-
   };
 
   const addInfoNotClient = (client: ClientDTO) => {
@@ -212,6 +225,33 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
       ...prev,
       name: e.target.value,
     }));
+  };
+
+  const handelDateStart = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const ahora = new Date();
+    const val = new Date(e.target.value);
+    if (
+      val.getDay() >= ahora.getDay() &&
+      val.getMonth() >= ahora.getMonth() &&
+      val.getFullYear() >= ahora.getFullYear()
+    ) {
+      setStart(val);
+    }
+  };
+
+  const handelDateEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = new Date(e.target.value);
+    if (
+      val.getDay() >= start.getDay() &&
+      val.getMonth() >= start.getMonth() &&
+      val.getFullYear() >= start.getFullYear()
+    ) {
+      setEnd(val);
+    }
+  };
+
+  const handleDescriptionChange = (value:string) => {
+    setDescription(value);
   };
 
   return (
@@ -244,13 +284,13 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
               <input
                 type="datetime-local"
                 value={moment(start).format("YYYY-MM-DDTHH:mm")}
-                onChange={(e) => setStart(new Date(e.target.value))}
+                onChange={handelDateStart}
               />
               <span>-</span>
               <input
                 type="datetime-local"
                 value={moment(end).format("YYYY-MM-DDTHH:mm")}
-                onChange={(e) => setEnd(new Date(e.target.value))}
+                onChange={handelDateEnd}
               />
             </div>
           </div>
@@ -264,12 +304,36 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
               />
             </div>
             <div className={NewEventModalStyle.container_info_description}>
-              <textarea
+              <ReactQuill
+                className={NewEventModalStyle.container_info_description_des}
                 value={description}
-                placeholder="Descripción"
-                onChange={(e) => setDescription(e.target.value)}
+                onChange={handleDescriptionChange}
+                modules={{
+                  toolbar: [
+                    ["bold", "italic", "underline"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    ["link"],
+                    ["clean"],
+                  ],
+                }}
+                formats={[
+                  "bold",
+                  "italic",
+                  "underline",
+                  "list",
+                  "bullet",
+                  "link",
+                ]}
               />
             </div>
+          </div>
+
+          <div></div>
+
+          <div className={NewEventModalStyle.container_capacity_max}>
+            <span>
+              Capacidad máx. de Personas: <strong>{capacity}</strong>
+            </span>
           </div>
 
           <div className={NewEventModalStyle.container_client}>

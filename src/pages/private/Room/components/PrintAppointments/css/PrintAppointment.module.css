@@ -35,6 +35,7 @@
   .print_header_container_img img {
     width: 170px;
     height: auto;
+    margin-right: 20px;
   }
   
   .print_header_container_title h1 {
@@ -50,6 +51,7 @@
   .container_info {
     display: flex;
     justify-content: space-between;
+    padding: 10px 0;
     border-bottom: 1px solid #e0e0e0;
   }
   
@@ -79,8 +81,6 @@
 
   .title {
     font-size: 16px;
-    padding: 7px 0;
-    margin: 0;
   }
 
 
@@ -112,7 +112,7 @@
 .calendar th,
 .calendar td {
   border: 1px solid #ddd;
-  padding: 5px;
+  padding: 8px;
   font-size: 12px;
 }
 
@@ -124,14 +124,9 @@
 /* Estilos para las celdas del calendario */
 .calendar td {
   cursor: pointer;
-  color: #555;
 }
 
 /* Estilos para las celdas en blanco del calendario */
 .calendar td.blank {
   background-color: #f8f8f8;
-}
-
-.th_input_check {
-  width: 150px;
 }

@@ -1,29 +1,51 @@
 import React, { useEffect, useState } from "react";
 import {
   Calendar,
-  momentLocalizer,
   Event as CalendarEvent,
   SlotInfo,
+  dateFnsLocalizer,
 } from "react-big-calendar";
-import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import AppointmentModal from "../AppointmentModal/AppointmentModal";
 import AppointmentCalendarStyle from "./css/AppointmentCalendar.module.css";
 import NewEventModal from "./components/NewEventModal";
 import { IAppointment } from "../../../Rooms/services/Rooms.service";
-import { deleteAppointmentHTTP, postAppointmentHTTP, putAppointmentHTTP } from "../../service/Room.service";
+import {
+  deleteAppointmentHTTP,
+  postAppointmentHTTP,
+  putAppointmentHTTP,
+} from "../../service/Room.service";
+import PrintAppointment from "../PrintAppointment/PrintAppointment";
+import ListOptionPrint from "./components/ListOptionPrint/ListOptionPrint";
+import PrintAppointments from "../PrintAppointments/PrintAppointments";
+
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { es } from "date-fns/locale";
 
 interface CalendarProps {
   _appointments: IAppointment[];
   idRoom: string;
+  nameRoom: string;
+  capacity: number;
 }
 
-
-const localizer = momentLocalizer(moment);
+// Configuración del localizador de date-fns
+const locales = {
+  es: es,
+};
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek: () => startOfWeek(new Date(), { locale: es }),
+  getDay,
+  locales,
+});
 
 const AppointmentCalendar: React.FC<CalendarProps> = ({
   _appointments,
   idRoom,
+  nameRoom,
+  capacity,
 }) => {
   // Event, variable para poder mostrar todos los eventos que hay
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -36,6 +58,14 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
 
   // Mostramos el modal de un evento
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  // Mostramos el modal de un evento
+  const [modalIsOpenPrint, setModalIsOpenPrint] = useState(false);
+
+  // Modal para imprimir un turno
+  const [openPrint, setOpenPrint] = useState<boolean>(false);
+  // Modal para imprimir un turno
+  const [openPrints, setOpenPrints] = useState<boolean>(false);
   // Nuevo evento
   const [newEvent, setNewEvent] = useState<IAppointment | null>(null);
 
@@ -50,8 +80,28 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
     start: new Date(),
     title: "",
     GuestListClient: [],
-    GuestListNotClient: []
+    GuestListNotClient: [],
   });
+
+  // Seleccionamos un evento
+  const [appointmentsPrints, setAppointmentsPrints] = useState<IAppointment[]>(
+    []
+  );
+
+  // Seleccionamos un evento
+  const [selectedAppointmentPrint, setSelectedAppointmentPrint] =
+    useState<IAppointment>({
+      _id: "",
+      available: false,
+      client: null,
+      date: new Date(),
+      description: "",
+      end: new Date(),
+      start: new Date(),
+      title: "",
+      GuestListClient: [],
+      GuestListNotClient: [],
+    });
 
   const handleEventClick = (event: CalendarEvent) => {
     const appointment = appointments.find(
@@ -59,8 +109,6 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         app.title === event.title &&
         app.start.getTime() === (event.start as Date).getTime()
     );
-
-    console.log("handleEventClick", appointments)
 
     if (appointment) {
       setSelectedAppointment(appointment);
@@ -71,19 +119,22 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
   const handleSlotSelect = (slotInfo: SlotInfo) => {
     const start = new Date(slotInfo.start);
     const end = new Date(slotInfo.end);
-    setNewEvent({
-      title: "",
-      start,
-      end,
-      description: "",
-      _id: "",
-      available: false,
-      client: null,
-      date: start,
-      GuestListClient: [],
-      GuestListNotClient: []
-    });
-    setNewEventModalOpen(true);
+    const ahora = new Date();
+    if (start >= ahora) {
+      setNewEvent({
+        title: "",
+        start,
+        end,
+        description: "",
+        _id: "",
+        available: false,
+        client: null,
+        date: start,
+        GuestListClient: [],
+        GuestListNotClient: [],
+      });
+      setNewEventModalOpen(true);
+    }
   };
 
   const handleNewEventSave = async (event: IAppointment) => {
@@ -99,9 +150,8 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
       },
     };
     const rest = await postAppointmentHTTP(idRoom, event);
-    console.log("rest", rest)
-    if(rest) {
 
+    if (rest) {
       const app: IAppointment[] = rest.map((appointment) => ({
         _id: appointment._id,
         date: new Date(appointment.date),
@@ -112,20 +162,18 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         available: appointment.available,
         client: appointment.client,
         GuestListClient: appointment.GuestListClient,
-        GuestListNotClient: appointment.GuestListNotClient
+        GuestListNotClient: appointment.GuestListNotClient,
       }));
 
       setEvents([...events, e]);
-      setAppointments(app)
-
+      setAppointments(app);
     }
     setNewEventModalOpen(false);
   };
 
-  const handleEditEventSave = async (event: IAppointment ) => {
+  const handleEditEventSave = async (event: IAppointment) => {
     const rest = await putAppointmentHTTP(idRoom, event._id, event);
-    if(rest) {
-
+    if (rest) {
       const _events: CalendarEvent[] = rest.map((appointment) => ({
         title: appointment.title,
         start: new Date(appointment.start),
@@ -148,7 +196,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         available: appointment.available,
         client: appointment.client,
         GuestListClient: appointment.GuestListClient,
-        GuestListNotClient: appointment.GuestListNotClient
+        GuestListNotClient: appointment.GuestListNotClient,
       }));
       setAppointments(app);
       setEvents([..._events]);
@@ -157,10 +205,27 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
     setModalIsOpen(false);
   };
 
-  const handleDeleteEvent = async (id: string ) => {
-    const rest = await deleteAppointmentHTTP(idRoom, id);
-    if(rest) {
+  const printAppointment = async (event: IAppointment) => {
+    setSelectedAppointment(event);
+    setModalIsOpenPrint(false);
+    setOpenPrint(true);
+  };
 
+  const onPrint = async () => {
+    setModalIsOpen(false);
+    setOpenPrint(true);
+  };
+
+  const printAppointments = async (_event: IAppointment[]) => {
+    setAppointmentsPrints(_event);
+    console.log("_event", _event);
+    setModalIsOpenPrint(false);
+    setOpenPrints(true);
+  };
+
+  const handleDeleteEvent = async (id: string) => {
+    const rest = await deleteAppointmentHTTP(idRoom, id);
+    if (rest) {
       const _events: CalendarEvent[] = rest.map((appointment) => ({
         title: appointment.title,
         start: new Date(appointment.start),
@@ -183,7 +248,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         available: appointment.available,
         client: appointment.client,
         GuestListClient: appointment.GuestListClient,
-        GuestListNotClient: appointment.GuestListNotClient
+        GuestListNotClient: appointment.GuestListNotClient,
       }));
       setAppointments(app);
       setEvents([..._events]);
@@ -215,7 +280,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
       available: appointment.available,
       client: appointment.client,
       GuestListClient: appointment.GuestListClient,
-      GuestListNotClient: appointment.GuestListNotClient
+      GuestListNotClient: appointment.GuestListNotClient,
     }));
 
     setEvents([..._events]);
@@ -234,6 +299,39 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
     };
   };
 
+  const handleEventDClick = (
+    event: React.MouseEvent,
+    calendarEvent: IAppointment
+  ) => {
+    event.preventDefault();
+    const appointment = appointments.find(
+      (app) =>
+        app.title === calendarEvent.title &&
+        app.start.getTime() === (calendarEvent.start as Date).getTime()
+    );
+
+    if (appointment) {
+      setSelectedAppointmentPrint(appointment);
+      setModalIsOpenPrint(true);
+    }
+  };
+
+  // Textos traducidos
+  const messages = {
+    allDay: "Todo el día",
+    previous: "Anterior",
+    next: "Siguiente",
+    today: "Hoy",
+    month: "Mes",
+    week: "Semana",
+    day: "Día",
+    agenda: "Agenda",
+    date: "Fecha",
+    time: "Hora",
+    event: "Evento",
+    noEventsInRange: "No hay eventos en este rango.",
+  };
+
   return (
     <>
       <div className={AppointmentCalendarStyle.container}>
@@ -246,18 +344,43 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
           startAccessor="start"
           endAccessor="end"
           style={{ height: 500, backgroundColor: "#fff" }}
-          tooltipAccessor={(event) => event.resource.description}
+          tooltipAccessor={(event) => event.resource.title}
           onSelectEvent={handleEventClick}
           eventPropGetter={eventPropGetter}
           selectable
           onSelectSlot={handleSlotSelect}
+          messages={messages}
+          culture="es"
+          components={{
+            event: ({ event }) => (
+              <div
+                onContextMenu={(e) =>
+                  handleEventDClick(e, event as IAppointment)
+                }
+              >
+                {event.title?.toString().toUpperCase()}
+              </div>
+            ),
+          }}
         />
+
+        <ListOptionPrint
+          printAppointments={printAppointments}
+          printAppointment={printAppointment}
+          event={selectedAppointmentPrint}
+          appointments={appointments}
+          onRequestClose={() => setModalIsOpenPrint(false)}
+          isOpen={modalIsOpenPrint}
+        />
+
         <AppointmentModal
           isOpen={modalIsOpen}
           event={selectedAppointment}
           onRequestClose={() => setModalIsOpen(false)}
           onSave={handleEditEventSave}
           onDelet={handleDeleteEvent}
+          onPrint={onPrint}
+          capacity={capacity}
         />
         {/* Modal para nuevo evento */}
         {newEventModalOpen && newEvent && (
@@ -266,9 +389,34 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
             onRequestClose={() => setNewEventModalOpen(false)}
             onSave={handleNewEventSave}
             event={newEvent}
+            capacity={capacity}
           />
         )}
       </div>
+
+      {openPrint ? (
+        <PrintAppointment
+          idRoom={idRoom}
+          onClose={() => setOpenPrint(false)}
+          appointment={selectedAppointment}
+          name={nameRoom}
+          capacity={capacity}
+        />
+      ) : (
+        <></>
+      )}
+
+      {openPrints ? (
+        <PrintAppointments
+          idRoom={idRoom}
+          onClose={() => setOpenPrints(false)}
+          appointment={appointmentsPrints}
+          name={nameRoom}
+          capacity={capacity}
+        />
+      ) : (
+        <></>
+      )}
     </>
   );
 };
