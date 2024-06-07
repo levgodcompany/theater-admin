@@ -10,6 +10,7 @@ export interface IAppointment {
   date: Date; // Fecha y hora del turno
   start: Date; // Hora de entrada
   end: Date; // Hora de salida
+  price: number;
   title: string; // Título del turno
   description: string; // Descripción del turno
   available: boolean; // Para saber si el turno esta o no disponible
@@ -38,6 +39,7 @@ export interface IClientNotRegister extends Document{
 
 export interface IRoom {
   _id: string;
+  priceBase: number;
   name: string; // Nombre de la sala
   capacity: number; // Capacidad máxima de personas en la sala
   availableAppointments: IAppointment[]; // Lista de turnos disponibles en la sala

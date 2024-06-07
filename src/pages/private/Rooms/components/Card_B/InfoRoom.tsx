@@ -7,6 +7,7 @@ export interface PropsCard {
   capacity: string | number;
   phone: string;
   description: string;
+  price: number
 }
 
 const InfoRoom: React.FC<PropsCard> = ({
@@ -15,6 +16,7 @@ const InfoRoom: React.FC<PropsCard> = ({
   phone,
   image,
   description,
+  price
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -44,6 +46,9 @@ const InfoRoom: React.FC<PropsCard> = ({
         <div className={InfoLocalStyles.user_info_info}>
           <p>
             <strong>Capacidad:</strong> {capacity}
+          </p>
+          <p>
+            <strong>Precio:</strong> ${price}
           </p>
           <p>
             <strong>Phone:</strong> {phone}

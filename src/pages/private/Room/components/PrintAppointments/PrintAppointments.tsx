@@ -10,6 +10,7 @@ import {
 
 export interface IAppointmentPrint {
   _id: string;
+  price: number;
   date: Date; // Fecha y hora del turno
   start: Date; // Hora de entrada
   end: Date; // Hora de salida
@@ -60,6 +61,7 @@ const PrintAppointments: React.FC<PropPrint> = ({
               date: new Date(a.date),
               description: a.description,
               end: new Date(a.end),
+              price: a.price,
               GuestListClient: res,
               start: new Date(a.start),
               title: a.title,

@@ -1,5 +1,4 @@
 
-import { useAppSelector } from '../../../redux/hooks';
 import PerfilStyle from '../css/perfil.module.css'
 const Perfil = () => {
 

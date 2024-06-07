@@ -87,6 +87,7 @@
 }
 
 .container_info,
+.container_info_add,
 .container_client {
   display: flex;
   flex-direction: row;
@@ -98,6 +99,13 @@
   flex-direction: column;
   align-items: stretch;
   
+}
+
+.container_info_add {
+  width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
 }
 
 .container_info {
@@ -138,7 +146,7 @@ input {
   border-radius: 0 0 4px 4px;
   max-height: 150px;
   overflow-y: auto;
-  background-color: white;
+  background-color: #fff;
   position: absolute;
   width: 100%;
   z-index: 1;
@@ -212,7 +220,36 @@ input {
   margin-top: 15px;
 }
 
+.container_price_app {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .container_capacity_max > span {
   font-size: 11px;
   color: #686b6e;
+}
+
+.container_price_app > span {
+  font-size: 11px;
+  color: #686b6e;
+}
+
+.container_image_client_price {
+  font-size: 21px;
+  color: #5f6368;
+  font-weight: 500;
+  padding-left: 6px;
+}
+
+.container_buttons {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.add_description {
+  color: #686b6e;
+  padding: 10px;
+  font-size: 12px;
+  cursor: pointer;
 }

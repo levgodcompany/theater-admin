@@ -26,16 +26,11 @@ const RoomDetails = () => {
   }, []);
 
 
-  const componentRef = useRef<HTMLDivElement>(null);
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
-
   return (
     <>
       <Header />
       <Sidebar />
-      <div ref={componentRef}>
+      
       {rooms ? (
         <>
           <div className={RoomsStyle.rooms_container}>
@@ -47,6 +42,7 @@ const RoomDetails = () => {
                   description={room.description}
                   phone={room.phone}
                   title={room.name}
+                  price={room.priceBase}
                 />
 
                 <OpeningHours openingDays={room.openingHours} />
@@ -73,9 +69,6 @@ const RoomDetails = () => {
       ) : (
         <></>
       )}
-
-<button onClick={handlePrint}>Imprimir</button>
-      </div>
     </>
   );
 };

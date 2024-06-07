@@ -27,6 +27,7 @@ const Room = () => {
     capacity: 0, // Capacidad máxima de personas en la sala
     availableAppointments: [], // Lista de turnos disponibles en la sala
     phone: "", // Número de teléfono del local
+    priceBase: 0,
     openingHours: {
       monday: {
         isOpen: false,
@@ -137,11 +138,13 @@ const Room = () => {
             description={room.description}
             phone={room.phone}
             title={room.name}
+            price={room.priceBase}
           />
           <div className={RoomStyle.room_calendar}>
             <AppointmentCalendar
               _appointments={room.availableAppointments}
               idRoom={room._id}
+              price={room.priceBase}
               nameRoom={room.name}
               capacity={room.capacity}
             />

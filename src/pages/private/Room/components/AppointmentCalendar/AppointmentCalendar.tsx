@@ -27,6 +27,7 @@ interface CalendarProps {
   idRoom: string;
   nameRoom: string;
   capacity: number;
+  price: number;
 }
 
 // Configuración del localizador de date-fns
@@ -46,6 +47,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
   idRoom,
   nameRoom,
   capacity,
+  price
 }) => {
   // Event, variable para poder mostrar todos los eventos que hay
   const [events, setEvents] = useState<CalendarEvent[]>([]);
@@ -79,6 +81,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
     end: new Date(),
     start: new Date(),
     title: "",
+    price: 0,
     GuestListClient: [],
     GuestListNotClient: [],
   });
@@ -99,6 +102,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
       end: new Date(),
       start: new Date(),
       title: "",
+      price: 0,
       GuestListClient: [],
       GuestListNotClient: [],
     });
@@ -127,6 +131,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         end,
         description: "",
         _id: "",
+        price: 0,
         available: false,
         client: null,
         date: start,
@@ -158,6 +163,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         start: new Date(appointment.start),
         end: new Date(appointment.end),
         title: appointment.title,
+        price: appointment.price,
         description: appointment.description,
         available: appointment.available,
         client: appointment.client,
@@ -194,6 +200,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         title: appointment.title,
         description: appointment.description,
         available: appointment.available,
+        price: appointment.price,
         client: appointment.client,
         GuestListClient: appointment.GuestListClient,
         GuestListNotClient: appointment.GuestListNotClient,
@@ -246,6 +253,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         title: appointment.title,
         description: appointment.description,
         available: appointment.available,
+        price: appointment.price,
         client: appointment.client,
         GuestListClient: appointment.GuestListClient,
         GuestListNotClient: appointment.GuestListNotClient,
@@ -279,6 +287,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
       description: appointment.description,
       available: appointment.available,
       client: appointment.client,
+      price: appointment.price,
       GuestListClient: appointment.GuestListClient,
       GuestListNotClient: appointment.GuestListNotClient,
     }));
@@ -336,7 +345,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
     <>
       <div className={AppointmentCalendarStyle.container}>
         <div className={AppointmentCalendarStyle.header}>
-          <h2>Turnos disponibles:</h2>
+          
         </div>
         <Calendar
           localizer={localizer}
@@ -354,11 +363,12 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
           components={{
             event: ({ event }) => (
               <div
+              style={{fontSize: "10px"}}
                 onContextMenu={(e) =>
                   handleEventDClick(e, event as IAppointment)
                 }
               >
-                {event.title?.toString().toUpperCase()}
+                <strong  style={{color: "#fff"}}>{event.title}</strong>
               </div>
             ),
           }}
@@ -381,6 +391,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
           onDelet={handleDeleteEvent}
           onPrint={onPrint}
           capacity={capacity}
+          price={price}
         />
         {/* Modal para nuevo evento */}
         {newEventModalOpen && newEvent && (
@@ -390,6 +401,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
             onSave={handleNewEventSave}
             event={newEvent}
             capacity={capacity}
+            price={price}
           />
         )}
       </div>

@@ -1,9 +1,11 @@
 .rooms_container {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 20px;
-  justify-content: center;
   padding: 20px 0;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
 }
 
 .room_details, .containerbutton_new {
@@ -19,6 +21,12 @@
 .container_button_new {
   text-align: center;
   padding: 20px;
+}
+
+.container_button_new > button {
+  width: 250px;
+  padding: 15px;
+  background-color: #fff;
 }
 
 .room_calendar {

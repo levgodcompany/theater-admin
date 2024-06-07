@@ -33,6 +33,7 @@ const PrintAppointment: React.FC<PropPrint> = ({
   });
   const [app, setApp] = useState<IAppointment>({
     _id: "",
+    price: 0,
     available: false,
     client: null,
     date: new Date(),

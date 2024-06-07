@@ -22,6 +22,7 @@ interface NewEventModalProps {
   onSave: (event: IAppointment) => void;
   event: IAppointment;
   capacity: number;
+  price: number;
 }
 
 const NewEventModal: React.FC<NewEventModalProps> = ({
@@ -29,8 +30,9 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   onRequestClose,
   onSave,
   event,
+  capacity,
+  price,
 }) => {
-  const capacity = 3;
   const [title, setTitle] = useState(event.title || "");
   const [available, setAvailable] = useState<boolean>(event.available);
   const [description, setDescription] = useState(event.description || "");
@@ -38,8 +40,10 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   const [end, setEnd] = useState(event.end as Date);
 
   const [inputValue, setInputValue] = useState<string>("");
+  const [inputValuePrice, setInputValuePrice] = useState<number>(price);
   const [inputValueOrganizer, setInputValueOrganizer] = useState<string>("");
   const [selectedClients, setSelectedClients] = useState<ClientDTO[]>([]);
+  const [isAddDescription, setIsAddDescription] = useState<boolean>(false);
   const [selectedClientOrganizer, setSelectedClientOrganizer] =
     useState<ClientDTO>({
       id: "",
@@ -79,6 +83,10 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
+  };
+
+  const handleInputPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValuePrice(Number.parseInt(e.target.value));
   };
 
   const handleInputOrganizerChange = (
@@ -191,6 +199,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
         end,
         description,
         available,
+        price: inputValuePrice,
         client: idClientOrg,
         GuestListClient: idSelectClients,
         GuestListNotClient: idSelectNotClients,
@@ -250,7 +259,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
     }
   };
 
-  const handleDescriptionChange = (value:string) => {
+  const handleDescriptionChange = (value: string) => {
     setDescription(value);
   };
 
@@ -295,7 +304,45 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
             </div>
           </div>
 
-          <div className={NewEventModalStyle.container_info}>
+
+
+
+          {isAddDescription ? (
+            <div className={NewEventModalStyle.container_info}>
+              <div className={NewEventModalStyle.container_image_description}>
+                <img
+                  className={NewEventModalStyle.image_description}
+                  src={DescriptionImage}
+                  alt="Description"
+                />
+              </div>
+
+              <div className={NewEventModalStyle.container_info_description}>
+                <ReactQuill
+                  className={NewEventModalStyle.container_info_description_des}
+                  value={description}
+                  onChange={handleDescriptionChange}
+                  modules={{
+                    toolbar: [
+                      ["bold", "italic", "underline"],
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      ["link"],
+                      ["clean"],
+                    ],
+                  }}
+                  formats={[
+                    "bold",
+                    "italic",
+                    "underline",
+                    "list",
+                    "bullet",
+                    "link",
+                  ]}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className={NewEventModalStyle.container_info_add}>
             <div className={NewEventModalStyle.container_image_description}>
               <img
                 className={NewEventModalStyle.image_description}
@@ -303,32 +350,15 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
                 alt="Description"
               />
             </div>
-            <div className={NewEventModalStyle.container_info_description}>
-              <ReactQuill
-                className={NewEventModalStyle.container_info_description_des}
-                value={description}
-                onChange={handleDescriptionChange}
-                modules={{
-                  toolbar: [
-                    ["bold", "italic", "underline"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    ["link"],
-                    ["clean"],
-                  ],
-                }}
-                formats={[
-                  "bold",
-                  "italic",
-                  "underline",
-                  "list",
-                  "bullet",
-                  "link",
-                ]}
-              />
-            </div>
+            <div onClick={() => setIsAddDescription(true)}>
+            <span className={NewEventModalStyle.add_description}>
+              Agregar descripción
+            </span>
           </div>
 
-          <div></div>
+          </div>
+
+          )}
 
           <div className={NewEventModalStyle.container_capacity_max}>
             <span>
@@ -383,106 +413,30 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
             </div>
           </div>
 
+          <div className={NewEventModalStyle.container_capacity_max}>
+            <span>Precio del Turno</span>
+          </div>
           <div className={NewEventModalStyle.container_client}>
             <div className={NewEventModalStyle.container_image_client}>
-              <img
-                className={NewEventModalStyle.image_client}
-                src={UsersImage}
-                alt="Users"
-              />
+              <span className={NewEventModalStyle.container_image_client_price}>
+                $
+              </span>
             </div>
             <div className={NewEventModalStyle.autocomplete_select}>
               <input
-                type="text"
-                value={inputValue}
-                onChange={handleInputChange}
-                placeholder="Añade invitados"
+                type="number"
+                value={inputValuePrice}
+                onChange={handleInputPriceChange}
+                placeholder="Añade Valor"
                 className={NewEventModalStyle.input}
               />
-              {inputValue && (
-                <ul className={NewEventModalStyle.options_list}>
-                  {filteredClients.length > 0 ? (
-                    filteredClients.map((client) => (
-                      <li
-                        key={client.id}
-                        onClick={() => handleOptionClick(client)}
-                        className={
-                          selectedClients.some(
-                            (selectedClient) => selectedClient.id === client.id
-                          )
-                            ? NewEventModalStyle.disabled_option
-                            : ""
-                        }
-                      >
-                        <span>{client.name}</span>
-                        <span>{client.email}</span>
-                      </li>
-                    ))
-                  ) : (
-                    <li
-                      onClick={handleAddNewClient}
-                      className={NewEventModalStyle.add_option}
-                    >
-                      Add "{inputValue}"
-                    </li>
-                  )}
-                </ul>
-              )}
-              <ul className={NewEventModalStyle.selected_options}>
-                {selectedClients.map((client) => (
-                  <li
-                    key={client.id}
-                    className={NewEventModalStyle.selected_option}
-                  >
-                    {client.name === "" ? (
-                      <>
-                        {isOpenNewNotClient ? (
-                          <div className={NewEventModalStyle.container_addinfo}>
-                            <div>
-                              <input
-                                type="text"
-                                placeholder="Nombre completo"
-                                onChange={handleInputNameNewNotClient}
-                                value={newNotClient.name}
-                              />
-                              <button onClick={saveNewNotClient}>
-                                Guardar
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <>
-                            <span>{client.email} *</span>
-                            <button
-                              onClick={() => addInfoNotClient(client)}
-                              className={NewEventModalStyle.remove_button}
-                            >
-                              Add Info
-                            </button>
-                          </>
-                        )}
-                        <button
-                          onClick={() => handleRemoveOption(client)}
-                          className={NewEventModalStyle.remove_button}
-                        >
-                          Remove
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <span>{client.name} *</span>
-                        <button
-                          onClick={() => handleRemoveOption(client)}
-                          className={NewEventModalStyle.remove_button}
-                        >
-                          Remove
-                        </button>
-                      </>
-                    )}
-                  </li>
-                ))}
-              </ul>
             </div>
+          </div>
+          <div className={NewEventModalStyle.container_price_app}>
+            <span>
+              Si el valor es 0 se romara el precio base de la sala:{" "}
+              <strong>${price}</strong>
+            </span>
           </div>
 
           <div className={NewEventModalStyle.container_availability}>
@@ -496,7 +450,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
               onChange={(e) => setAvailable(e.target.checked)}
             />
           </div>
-          <div>
+          <div className={NewEventModalStyle.container_buttons}>
             <button type="button" onClick={handleSave}>
               Guardar
             </button>

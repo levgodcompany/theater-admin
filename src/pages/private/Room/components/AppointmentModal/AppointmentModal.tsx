@@ -20,9 +20,10 @@ interface NewEventModalProps {
   onRequestClose: () => void;
   onSave: (event: IAppointment) => void;
   onDelet: (IAppointment: string) => void;
-  onPrint: ()=> void;
+  onPrint: () => void;
   capacity: number;
   event: IAppointment;
+  price: number;
 }
 
 const AppointmentModal: React.FC<NewEventModalProps> = ({
@@ -32,7 +33,8 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
   onDelet,
   onPrint,
   event,
-  capacity
+  capacity,
+  price,
 }) => {
   // State hooks for form fields
   const [title, setTitle] = useState(event.title);
@@ -43,6 +45,7 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
 
   // State hooks for client management
   const [inputValue, setInputValue] = useState<string>("");
+  const [inputValuePrice, setInputValuePrice] = useState<number>(price);
   const [inputValueOrganizer, setInputValueOrganizer] = useState<string>("");
   const [selectedClients, setSelectedClients] = useState<ClientDTO[]>([]);
   const [selectedClientOrganizer, setSelectedClientOrganizer] =
@@ -73,6 +76,7 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
     setDescription(event.description);
     setStart(event.start as Date);
     setEnd(event.end as Date);
+    setInputValuePrice(event.price);
 
     if (event.client) {
       const organizerIndex = clientsRegister.findIndex(
@@ -149,6 +153,10 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
       setSelectedClients((prev) => [...prev, client]);
     }
     setInputValue("");
+  };
+
+  const handleInputPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValuePrice(Number.parseInt(e.target.value));
   };
 
   const handleOptionOrganizerClick = (client: ClientDTO) => {
@@ -244,6 +252,7 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
         start,
         end,
         description,
+        price: inputValuePrice == 0 ? price : inputValuePrice,
         available,
         client: organizerId,
         GuestListClient: selectedClientIds,
@@ -285,14 +294,35 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
   };
 
   const handleOpenPrint = () => {
-
-    onPrint()
+    onPrint();
   };
 
-  const handleDescriptionChange = (value:string) => {
+  const handleDescriptionChange = (value: string) => {
     setDescription(value);
   };
 
+  const handelDateStart = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const ahora = new Date();
+    const val = new Date(e.target.value);
+    if (
+      val.getDay() >= ahora.getDay() &&
+      val.getMonth() >= ahora.getMonth() &&
+      val.getFullYear() >= ahora.getFullYear()
+    ) {
+      setStart(val);
+    }
+  };
+
+  const handelDateEnd = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = new Date(e.target.value);
+    if (
+      val.getDay() >= start.getDay() &&
+      val.getMonth() >= start.getMonth() &&
+      val.getFullYear() >= start.getFullYear()
+    ) {
+      setEnd(val);
+    }
+  };
 
   return (
     <>
@@ -325,13 +355,13 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
                 <input
                   type="datetime-local"
                   value={moment(start).format("YYYY-MM-DDTHH:mm")}
-                  onChange={(e) => setStart(new Date(e.target.value))}
+                  onChange={handelDateStart}
                 />
                 <span>-</span>
                 <input
                   type="datetime-local"
                   value={moment(end).format("YYYY-MM-DDTHH:mm")}
-                  onChange={(e) => setEnd(new Date(e.target.value))}
+                  onChange={handelDateEnd}
                 />
               </div>
             </div>
@@ -345,38 +375,37 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
                 />
               </div>
               <div className={NewEventModalStyle.container_info_description}>
-              <ReactQuill
-                className={NewEventModalStyle.container_info_description_des}
-                value={description}
-                onChange={handleDescriptionChange}
-                modules={{
-                  toolbar: [
-                    ["bold", "italic", "underline"],
-                    [{ list: "ordered" }, { list: "bullet" }],
-                    ["link"],
-                    ["clean"],
-                  ],
-                }}
-                formats={[
-                  "bold",
-                  "italic",
-                  "underline",
-                  "list",
-                  "bullet",
-                  "link",
-                ]}
-              />
+                <ReactQuill
+                  className={NewEventModalStyle.container_info_description_des}
+                  value={description}
+                  onChange={handleDescriptionChange}
+                  modules={{
+                    toolbar: [
+                      ["bold", "italic", "underline"],
+                      [{ list: "ordered" }, { list: "bullet" }],
+                      ["link"],
+                      ["clean"],
+                    ],
+                  }}
+                  formats={[
+                    "bold",
+                    "italic",
+                    "underline",
+                    "list",
+                    "bullet",
+                    "link",
+                  ]}
+                />
               </div>
             </div>
 
             <div></div>
 
             <div className={NewEventModalStyle.container_capacity_max}>
-            <span>
-              Capacidad máx. de Personas: <strong>{capacity}</strong>
-            </span>
-          </div>
-
+              <span>
+                Capacidad máx. de Personas: <strong>{capacity}</strong>
+              </span>
+            </div>
 
             <div className={NewEventModalStyle.container_client}>
               <div className={NewEventModalStyle.container_image_client}>
@@ -530,6 +559,34 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
               </div>
             </div>
 
+            <div className={NewEventModalStyle.container_capacity_max}>
+              <span>Precio del Turno</span>
+            </div>
+            <div className={NewEventModalStyle.container_client}>
+              <div className={NewEventModalStyle.container_image_client}>
+                <span
+                  className={NewEventModalStyle.container_image_client_price}
+                >
+                  $
+                </span>
+              </div>
+              <div className={NewEventModalStyle.autocomplete_select}>
+                <input
+                  type="number"
+                  value={inputValuePrice}
+                  onChange={handleInputPriceChange}
+                  placeholder="Añade Valor"
+                  className={NewEventModalStyle.input}
+                />
+              </div>
+            </div>
+            <div className={NewEventModalStyle.container_price_app}>
+              <span>
+                Si el valor es 0 se romara el precio base de la sala:{" "}
+                <strong>${price}</strong>
+              </span>
+            </div>
+
             <div className={NewEventModalStyle.container_availability}>
               <label className={NewEventModalStyle.availability_label}>
                 Disponible:
@@ -554,7 +611,6 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
 
         <button onClick={handleOpenPrint}>Imprimir</button>
       </Modal>
-
     </>
   );
 };
