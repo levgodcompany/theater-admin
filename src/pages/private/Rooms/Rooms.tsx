@@ -11,11 +11,10 @@ import { getRoomsHTTP, IRoom } from "./services/Rooms.service";
 import { useEffect, useState } from "react";
 import NewRoom from "./components/NewRoom/NewRoom";
 
-
 const RoomDetails = () => {
   const [rooms, setRooms] = useState<IRoom[]>();
 
-  const [isNewRoom, setIsNewRoom] = useState<boolean>(false)
+  const [isNewRoom, setIsNewRoom] = useState<boolean>(false);
 
   const getRooms = async () => {
     const roomhttp = await getRoomsHTTP();
@@ -28,19 +27,19 @@ const RoomDetails = () => {
     getRooms();
   }, []);
 
-
   return (
     <>
       <Header />
       <Sidebar />
-      
+
       {rooms ? (
         <>
           <div className={RoomsStyle.rooms_container}>
             {rooms.map((room) => (
               <div key={room.name} className={RoomsStyle.room_details}>
                 <InfoRoom
-                  image="http://eljuvenil.com/wp-content/uploads/2019/11/Sala1H.jpg"
+                  idRoom={room._id}
+                  image= {room.mainImage.url}
                   capacity={room.capacity}
                   description={room.description}
                   phone={room.phone}
@@ -48,24 +47,35 @@ const RoomDetails = () => {
                   price={room.priceBase}
                 />
 
-                <OpeningHours openingDays={room.openingHours} />
+                <OpeningHours
+                  idRoom={room._id}
+                  openingDays={room.openingHours}
+                />
 
-                <ServicesList services={room.services} />
+                <ServicesList idRoom={room._id} services={room.services} />
 
                 <HighlightedImages
+                  idRoom={room._id}
                   images={room.additionalImages}
                   onViewMore={(index) => console.log("A ver mas", index)}
                   onEdit={(index) => console.log("A editar", index)}
                   onDelete={(index) => console.log("A eliminar", index)}
                 />
 
-                  <AppointmentCalendar _appointments={room.availableAppointments} idRoom={room._id} />
-
+                <AppointmentCalendar
+                  _appointments={room.availableAppointments}
+                  idRoom={room._id}
+                />
+                <div className={RoomsStyle.container_button_delete_room}>
+                  <button>Eliminar Sala</button>
+                </div>
               </div>
             ))}
 
             <div className={RoomsStyle.container_button_new}>
-              <button onClick={()=> setIsNewRoom(!isNewRoom)} >Nueva Sala</button>
+              <button onClick={() => setIsNewRoom(!isNewRoom)}>
+                Nueva Sala
+              </button>
             </div>
           </div>
         </>
@@ -73,9 +83,13 @@ const RoomDetails = () => {
         <></>
       )}
 
-      {
-        isNewRoom ? <><NewRoom /></> : <></>
-      }
+      {isNewRoom ? (
+        <>
+          <NewRoom />
+        </>
+      ) : (
+        <></>
+      )}
     </>
   );
 };

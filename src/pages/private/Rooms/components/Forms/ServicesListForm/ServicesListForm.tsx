@@ -3,21 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import ServicesModalStyle from './css/ServicesModal.module.css';
-import { useAppSelector } from '../../../../../../redux/hooks';
-import deleteImage from '../../../assets/delete-svgrepo-com.svg'
-import editImage from '../../../assets/edit-3-svgrepo-com.svg'
-import { editLocal, ILocal } from '../../../services/Local.service';
+import deleteImage from '../../../../../../assets/delete-svgrepo-com.svg'
+import editImage from '../../../../../../assets/edit-3-svgrepo-com.svg'
+import { IRoom, updateRoomHTTP } from '../../../services/Rooms.service';
 
 interface ServicesModalProps {
   isOpen: boolean;
   onRequestClose: () => void;
   services: string[];
-  onSubmit: (services: string[]) => void;
+  idRoom: string;
 }
 
-const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onRequestClose,  onSubmit }) => {
-  const [editedServices, setEditedServices] = useState<string[]>([]);
-  const servicesState = useAppSelector(state => state.local.services)
+const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onRequestClose, services, idRoom }) => {
+  const [editedServices, setEditedServices] = useState<string[]>(services);
   const [newService, setNewService] = useState<string>('');
 
   const handleDeleteService = (service: string) => {
@@ -25,8 +23,9 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onRequestClose,  
   };
 
   useEffect(()=> {
-    setEditedServices([...servicesState])
-  }, [servicesState])
+    console.log("services", services)
+    setEditedServices([...services])
+  }, [services])
 
   const handleEditService = (oldService: string, newService: string) => {
     const index = editedServices.indexOf(oldService);
@@ -37,12 +36,11 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onRequestClose,  
     }
   };
 
-  const editetLocal = async (local: Partial<ILocal>)=> {
-    const result = await  editLocal(local);
+  const editetLocal = async (room: Partial<IRoom>)=> {
+    const result = await  updateRoomHTTP(idRoom, room);
     console.log(result);
   }
   const handleSubmit = () => {
-    onSubmit(editedServices);
     editetLocal({
       services: editedServices
   })

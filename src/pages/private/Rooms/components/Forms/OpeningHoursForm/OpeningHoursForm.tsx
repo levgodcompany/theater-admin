@@ -4,12 +4,14 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import OpeningHoursFormStyle from "./css/OpeningHoursForm.module.css";
 import { useAppDispatch, useAppSelector } from "../../../../../../redux/hooks";
-import { editLocal, ILocal, IOpeningDays } from "../../../services/Local.service";
+import { IOpeningDays } from "../../OpeningHours/OpeningHours";
+import { IRoom, updateRoomHTTP } from "../../../services/Rooms.service";
 
 interface OpeningHoursModalProps {
   isOpen: boolean;
+  idRoom: string;
+  openingHoursRoom: IOpeningDays;
   onRequestClose: () => void;
-  onSubmit: (data: IOpeningDays) => void;
 }
 
 interface IOpeningCloseHours {
@@ -20,8 +22,9 @@ interface IOpeningCloseHours {
 
 const OpeningHoursModal: React.FC<OpeningHoursModalProps> = ({
   isOpen,
+  idRoom,
   onRequestClose,
-  onSubmit,
+  openingHoursRoom
 }) => {
   const [openingHours, setOpeningHours] = useState<IOpeningDays>({
     monday: { isOpen: false, open: "", close: "" },
@@ -33,21 +36,18 @@ const OpeningHoursModal: React.FC<OpeningHoursModalProps> = ({
     saturday: { isOpen: false, open: "", close: "" },
   });
 
-  const dispatch = useAppDispatch();
-
-  const openingHoursState = useAppSelector((state) => state.local.openingHours);
 
   useEffect(() => {
     setOpeningHours({
-      monday: openingHoursState.monday,
-      tuesday: openingHoursState.tuesday,
-      wednesday: openingHoursState.wednesday,
-      thursday: openingHoursState.thursday,
-      friday: openingHoursState.friday,
-      saturday: openingHoursState.saturday,
-      sunday: openingHoursState.sunday,
+      monday: openingHoursRoom.monday,
+      tuesday: openingHoursRoom.tuesday,
+      wednesday: openingHoursRoom.wednesday,
+      thursday: openingHoursRoom.thursday,
+      friday: openingHoursRoom.friday,
+      saturday: openingHoursRoom.saturday,
+      sunday: openingHoursRoom.sunday,
     });
-  }, [openingHoursState]);
+  }, [openingHoursRoom]);
 
   const handleChange = (
     day: keyof IOpeningDays,
@@ -63,8 +63,8 @@ const OpeningHoursModal: React.FC<OpeningHoursModalProps> = ({
     });
   };
 
-  const editetLocal = async (local: Partial<ILocal>)=> {
-    const result = await  editLocal(local);
+  const editetLocal = async (room: Partial<IRoom>)=> {
+    const result = await  updateRoomHTTP(idRoom, room);
     console.log(result);
   }
 
@@ -73,7 +73,6 @@ const OpeningHoursModal: React.FC<OpeningHoursModalProps> = ({
   editetLocal({
       openingHours: openingHours
   })
-    onSubmit(openingHours);
   };
 
 

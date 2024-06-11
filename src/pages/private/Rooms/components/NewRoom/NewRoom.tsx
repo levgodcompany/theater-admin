@@ -103,7 +103,10 @@ const NewRoom = () => {
       mainImage: localImages.length > 0 ? localImages[0] : { url: "" },
       additionalImages: localImages,
       services: editedServices,
+      dtoRoomHours: schedules
     };
+
+    console.log(roomSave)
 
     const res = await newRoom(roomSave);
   };
@@ -215,15 +218,6 @@ const NewRoom = () => {
           <p>Información del Local</p>
           <div className={NewRoomStyle.container_data_room}>
             <label className={NewRoomStyle.label_data_room}>
-              Image URL:
-              <input
-                type="text"
-                name="image"
-                value={formData.image}
-                onChange={handleChangeDataRoom}
-              />
-            </label>
-            <label className={NewRoomStyle.label_data_room}>
               Titulo:
               <input
                 type="text"
@@ -233,29 +227,11 @@ const NewRoom = () => {
               />
             </label>
             <label className={NewRoomStyle.label_data_room}>
-              E-mail:
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChangeDataRoom}
-              />
-            </label>
-            <label className={NewRoomStyle.label_data_room}>
               Cel.:
               <input
                 type="tel"
                 name="phone"
                 value={formData.phone}
-                onChange={handleChangeDataRoom}
-              />
-            </label>
-            <label className={NewRoomStyle.label_data_room}>
-              Dirección:
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
                 onChange={handleChangeDataRoom}
               />
             </label>
@@ -364,7 +340,7 @@ const NewRoom = () => {
                           <p className={NewRoomStyle.dto_hors_info_info}><strong>Descuento (%):</strong><span>{schedule.dto}%</span></p>
                           <p className={NewRoomStyle.dto_hors_info_info}><strong>Precio:</strong><span>${formData.priceBase}</span></p>
                           <p className={NewRoomStyle.dto_hors_info_info}><strong>Total de Descuento:</strong><span>${((schedule.dto/100)*formData.priceBase)}</span></p>
-                          <p className={NewRoomStyle.dto_hors_info_info}><strong>Total:</strong><span>${formData.priceBase-((schedule.dto/100)*formData.priceBase)}</span></p>
+                          <p className={NewRoomStyle.dto_hors_info_info}><strong>Total:</strong><span><strong>${formData.priceBase-((schedule.dto/100)*formData.priceBase)}</strong></span></p>
                         </div>
 
                         </div>

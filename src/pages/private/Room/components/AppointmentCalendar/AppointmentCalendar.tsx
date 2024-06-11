@@ -9,7 +9,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 import AppointmentModal from "../AppointmentModal/AppointmentModal";
 import AppointmentCalendarStyle from "./css/AppointmentCalendar.module.css";
 import NewEventModal from "./components/NewEventModal";
-import { IAppointment } from "../../../Rooms/services/Rooms.service";
+import { DtoRoom, IAppointment } from "../../../Rooms/services/Rooms.service";
 import {
   deleteAppointmentHTTP,
   postAppointmentHTTP,
@@ -28,6 +28,7 @@ interface CalendarProps {
   nameRoom: string;
   capacity: number;
   price: number;
+  dto: DtoRoom[];
 }
 
 // Configuración del localizador de date-fns
@@ -47,6 +48,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
   idRoom,
   nameRoom,
   capacity,
+  dto,
   price
 }) => {
   // Event, variable para poder mostrar todos los eventos que hay
@@ -396,6 +398,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         {/* Modal para nuevo evento */}
         {newEventModalOpen && newEvent && (
           <NewEventModal
+            dto={dto}
             isOpen={newEventModalOpen}
             onRequestClose={() => setNewEventModalOpen(false)}
             onSave={handleNewEventSave}

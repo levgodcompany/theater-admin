@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import "./css/HighlightedImagesForm.css";
 import { useAppSelector } from "../../../../../../redux/hooks";
-import { editLocal, ILocal } from "../../../services/Local.service";
+import { IRoom, updateRoomHTTP } from "../../../services/Rooms.service";
 
 interface IImage {
   url: string;
@@ -11,18 +11,17 @@ interface IImage {
 
 interface ImageFormModalProps {
   isOpen: boolean;
+  idRoom: string;
+  images: IImage[]
   onClose: () => void;
-  onSave: (images: IImage[]) => void;
 }
 
-const ImageFormModal: React.FC<ImageFormModalProps> = ({ isOpen, onClose, onSave }) => {
+const ImageFormModal: React.FC<ImageFormModalProps> = ({ idRoom, isOpen, images, onClose }) => {
   const [localImages, setLocalImages] = useState<IImage[]>([]);
 
-  const localImageState = useAppSelector(state => state.local.additionalImages);
-
   useEffect(()=> {
-    setLocalImages([...localImageState])
-  }, [localImageState])
+    setLocalImages([...images])
+  }, [images])
 
   const handleChange = (index: number, field: keyof IImage, value: string) => {
     const newImages = [...localImages];
@@ -39,12 +38,11 @@ const ImageFormModal: React.FC<ImageFormModalProps> = ({ isOpen, onClose, onSave
     setLocalImages(newImages);
   };
 
-  const editetLocal = async (local: Partial<ILocal>)=> {
-    const result = await  editLocal(local);
+  const editetLocal = async (room: Partial<IRoom>)=> {
+    const result = await  updateRoomHTTP(idRoom, room);
     console.log(result);
   }
   const handleSave = () => {
-    onSave(localImages);
     editetLocal({
       additionalImages: localImages
     })

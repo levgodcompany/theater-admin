@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import OpeningHoursStyle from "./css/OpeningHours.module.css";
 import editImage from '../../../Local/assets/edit-3-svgrepo-com.svg'
+import OpeningHoursModal from "../Forms/OpeningHoursForm/OpeningHoursForm";
 
 export interface IOpeningCloseHours {
   isOpen: boolean;
@@ -20,9 +21,10 @@ export interface IOpeningDays {
 
 interface OpeningHoursProps {
   openingDays: IOpeningDays;
+  idRoom: string;
 }
 
-const OpeningHours: React.FC<OpeningHoursProps> = ({ openingDays }) => {
+const OpeningHours: React.FC<OpeningHoursProps> = ({ idRoom, openingDays }) => {
   const days = [
     { name: "Lunes", value: openingDays.monday },
     { name: "Martes", value: openingDays.tuesday },
@@ -54,7 +56,7 @@ const OpeningHours: React.FC<OpeningHoursProps> = ({ openingDays }) => {
       <div className={OpeningHoursStyle.header}>
         <h2>Horarios</h2>
         <img onClick={handleOpenModal} src={editImage} alt="" /> 
-
+        <OpeningHoursModal openingHoursRoom={openingDays} idRoom={idRoom} isOpen={isModalOpen} onRequestClose={handleCloseModal} />
       </div>
       {days.map((day, index) => (
         <div key={index} className={OpeningHoursStyle.opening_hours_day}>
@@ -68,6 +70,7 @@ const OpeningHours: React.FC<OpeningHoursProps> = ({ openingDays }) => {
           )}
         </div>
       ))}
+
     </div>
   );
 };

@@ -134,7 +134,8 @@ const Room = () => {
       <div className={RoomStyle.room_container}>
         <div key={room.name} className={RoomStyle.container_room}>
           <InfoRoom
-            image="http://eljuvenil.com/wp-content/uploads/2019/11/Sala1H.jpg"
+            idRoom={room._id}
+            image={room.mainImage.url}
             capacity={room.capacity}
             description={room.description}
             phone={room.phone}
@@ -145,6 +146,7 @@ const Room = () => {
             <AppointmentCalendar
               _appointments={room.availableAppointments}
               idRoom={room._id}
+              dto={room.dtoRoomHours}
               price={room.priceBase}
               nameRoom={room.name}
               capacity={room.capacity}

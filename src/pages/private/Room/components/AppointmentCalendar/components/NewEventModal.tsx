@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import moment from "moment";
 import NewEventModalStyle from "./NewEventModal.module.css";
-import { IAppointment } from "../../../../Rooms/services/Rooms.service";
+import {
+  DtoRoom,
+  IAppointment,
+} from "../../../../Rooms/services/Rooms.service";
 import HoursImage from "../../../../../../assets/clock-svgrepo-com.svg";
 import DescriptionImage from "../../../../../../assets/text-description-svgrepo-com.svg";
-import UsersImage from "../../../../../../assets/users.svg";
 import UserImage from "../../../../../../assets/user-1-svgrepo-com.svg";
 import {
   ClientDTO,
@@ -23,6 +25,7 @@ interface NewEventModalProps {
   event: IAppointment;
   capacity: number;
   price: number;
+  dto: DtoRoom[];
 }
 
 const NewEventModal: React.FC<NewEventModalProps> = ({
@@ -32,9 +35,13 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   event,
   capacity,
   price,
+  dto,
 }) => {
   const [title, setTitle] = useState(event.title || "");
   const [available, setAvailable] = useState<boolean>(event.available);
+  const [isAplicDtoCheck, setIsAplicDtoCheck] = useState<boolean>(
+    event.available
+  );
   const [description, setDescription] = useState(event.description || "");
   const [start, setStart] = useState(event.start as Date);
   const [end, setEnd] = useState(event.end as Date);
@@ -64,6 +71,8 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
 
   const [clients, setClients] = useState<ClientDTO[]>([]);
   const [clientsRegister, setClientsRegister] = useState<ClientDTO[]>([]);
+
+  const [isAplicDto, setIsAplicDto] = useState<DtoRoom | null>(null);
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -192,6 +201,22 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
         "Tienes que agregar a un Organiizador, para poder invitar a mas gente"
       );
     } else {
+      let val = 0;
+
+      if (inputValuePrice > 0) {
+        val = inputValuePrice;
+      } else {
+        val = price;
+      }
+
+      if (isAplicDto && isAplicDtoCheck) {
+        if (inputValuePrice > 0) {
+          val = inputValuePrice - (isAplicDto.dto / 100) * inputValuePrice;
+        } else {
+          val = price - (isAplicDto.dto / 100) * price;
+        }
+      }
+
       onSave({
         ...event,
         title,
@@ -199,7 +224,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
         end,
         description,
         available,
-        price: inputValuePrice,
+        price: val,
         client: idClientOrg,
         GuestListClient: idSelectClients,
         GuestListNotClient: idSelectNotClients,
@@ -236,15 +261,44 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
     }));
   };
 
+  const isTimeWithinAnyRange = (
+    time: string,
+    rooms: DtoRoom[]
+  ): DtoRoom | null => {
+    return (
+      rooms.find((room) => {
+        const startTime = new Date(`1970-01-01T${room.startHour}:00`);
+        const endTime = new Date(`1970-01-01T${room.endHour}:00`);
+        const checkTime = new Date(`1970-01-01T${time}:00`);
+        console.log("checkTime > startTime", checkTime > startTime);
+        console.log("checkTime < endTime", checkTime < endTime);
+        return checkTime >= startTime && checkTime < endTime;
+      }) || null
+    );
+  };
+
   const handelDateStart = (e: React.ChangeEvent<HTMLInputElement>) => {
     const ahora = new Date();
     const val = new Date(e.target.value);
+
     if (
       val.getDay() >= ahora.getDay() &&
       val.getMonth() >= ahora.getMonth() &&
       val.getFullYear() >= ahora.getFullYear()
     ) {
+      const formattedTime = val.toTimeString().split(" ")[0]; // "HH:MM:SS"
+      const hourMinute = formattedTime.substring(0, 5); // "HH:MM"
+      console.log(dto);
+      const roomWithDiscount = isTimeWithinAnyRange(hourMinute, dto);
+      if (roomWithDiscount) {
+        setIsAplicDto(roomWithDiscount);
+      } else {
+        setIsAplicDto(null);
+      }
+
       setStart(val);
+    } else {
+      console.log("La fecha es anterior a la fecha actual");
     }
   };
 
@@ -261,6 +315,30 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
 
   const handleDescriptionChange = (value: string) => {
     setDescription(value);
+  };
+
+  const viewDto = () => {
+    if (isAplicDto && isAplicDtoCheck) {
+      if (inputValuePrice > 0) {
+        return (
+          <p className={NewEventModalStyle.p_dto}>
+            <span className={NewEventModalStyle.p_span_dto}>
+              ${inputValuePrice}
+            </span>{" "}
+            <strong>
+              ${inputValuePrice - (isAplicDto.dto / 100) * inputValuePrice}
+            </strong>
+          </p>
+        );
+      }
+
+      return (
+        <p className={NewEventModalStyle.p_dto}>
+          <span className={NewEventModalStyle.p_span_dto}>${price}</span>{" "}
+          <strong>${price - (isAplicDto.dto / 100) * price}</strong>
+        </p>
+      );
+    }
   };
 
   return (
@@ -304,9 +382,6 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
             </div>
           </div>
 
-
-
-
           {isAddDescription ? (
             <div className={NewEventModalStyle.container_info}>
               <div className={NewEventModalStyle.container_image_description}>
@@ -343,21 +418,19 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
             </div>
           ) : (
             <div className={NewEventModalStyle.container_info_add}>
-            <div className={NewEventModalStyle.container_image_description}>
-              <img
-                className={NewEventModalStyle.image_description}
-                src={DescriptionImage}
-                alt="Description"
-              />
+              <div className={NewEventModalStyle.container_image_description}>
+                <img
+                  className={NewEventModalStyle.image_description}
+                  src={DescriptionImage}
+                  alt="Description"
+                />
+              </div>
+              <div onClick={() => setIsAddDescription(true)}>
+                <span className={NewEventModalStyle.add_description}>
+                  Agregar descripción
+                </span>
+              </div>
             </div>
-            <div onClick={() => setIsAddDescription(true)}>
-            <span className={NewEventModalStyle.add_description}>
-              Agregar descripción
-            </span>
-          </div>
-
-          </div>
-
           )}
 
           <div className={NewEventModalStyle.container_capacity_max}>
@@ -434,10 +507,30 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
           </div>
           <div className={NewEventModalStyle.container_price_app}>
             <span>
-              Si el valor es 0 se romara el precio base de la sala:{" "}
+              Si el valor es 0 se tomara el precio base de la sala:{" "}
               <strong>${price}</strong>
             </span>
           </div>
+
+          {isAplicDto != null ? (
+            <>
+              <div className={NewEventModalStyle.container_availability}>
+                <label className={NewEventModalStyle.availability_label}>
+                  Aplicar descuento del {isAplicDto.dto}%
+                </label>
+                <input
+                  type="checkbox"
+                  name="available"
+                  checked={isAplicDtoCheck}
+                  onChange={(e) => setIsAplicDtoCheck(e.target.checked)}
+                />
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {isAplicDtoCheck && isAplicDto ? viewDto() : <></>}
 
           <div className={NewEventModalStyle.container_availability}>
             <label className={NewEventModalStyle.availability_label}>

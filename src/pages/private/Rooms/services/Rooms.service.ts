@@ -105,6 +105,7 @@ export interface RoomDTO {
   additionalImages: IImage[]; // Lista de imágenes adicionales del local
   description: string; // Descripción del local
   services: string[]; // Lista de servicios que ofrece el local
+  dtoRoomHours: DtoRoom[]
 }
 
 export const newRoom = async (
@@ -113,6 +114,23 @@ export const newRoom = async (
   try {
     const response = await axiosInstance.post<JsonResponseToken<IRoom>>(`rooms/room`, {...room} );
     const data = response.data;
+
+    return data.data;
+  } catch (error) {
+    console.error("Error loging in:", error);
+    // Manejar el error de forma adecuada
+  }
+};
+
+
+export const updateRoomHTTP = async (idRoom: string, room: Partial<IRoom>) => {
+  try {
+    const response = await axiosInstance.put<JsonResponseToken<IRoom>>(
+      `rooms/room/${idRoom}`,
+      { ...room }
+    );
+    const data = response.data;
+    console.log(data);
 
     return data.data;
   } catch (error) {
