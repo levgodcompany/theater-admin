@@ -71,6 +71,7 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onRequestClose,  
         />
         <button onClick={() => setEditedServices([...editedServices, newService])}>Agregar</button>
       </div>
+      
       <div className={ServicesModalStyle.buttons}>
         <button onClick={handleSubmit}>Guardar</button>
         <button onClick={onRequestClose}>Cancelar</button>

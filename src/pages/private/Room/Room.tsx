@@ -28,6 +28,7 @@ const Room = () => {
     availableAppointments: [], // Lista de turnos disponibles en la sala
     phone: "", // Número de teléfono del local
     priceBase: 0,
+    dtoRoomHours: [],
     openingHours: {
       monday: {
         isOpen: false,

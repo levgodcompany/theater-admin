@@ -37,6 +37,12 @@ export interface IClientNotRegister extends Document{
   bookedAppointments: IAppointment["_id"][]; // Lista de turnos reservados por el cliente
 }
 
+export interface DtoRoom {
+  startHour: string;
+  endHour: string;
+  dto: number
+}
+
 export interface IRoom {
   _id: string;
   priceBase: number;
@@ -49,6 +55,7 @@ export interface IRoom {
   additionalImages: IImage[]; // Lista de imágenes adicionales del local
   description: string; // Descripción del local
   services: string[]; // Lista de servicios que ofrece el local
+  dtoRoomHours: DtoRoom[]
 }
 
 export interface IImage {
@@ -79,6 +86,32 @@ export const getClientAppointment = async (
     const response = await axiosInstance.get<JsonResponseToken<IClient>>(
       `clients/client/book-appointment/room/${roomId}/client/${clientId}/add/${appointmentId}`
     );
+    const data = response.data;
+
+    return data.data;
+  } catch (error) {
+    console.error("Error loging in:", error);
+    // Manejar el error de forma adecuada
+  }
+};
+
+export interface RoomDTO {
+  name: string; // Nombre de la sala
+  price: number;
+  capacity: number; // Capacidad máxima de personas en la sala
+  phone: string; // Número de teléfono del local
+  openingHours: IOpeningDays; // Horario de apertura
+  mainImage: IImage; // Imagen principal del local
+  additionalImages: IImage[]; // Lista de imágenes adicionales del local
+  description: string; // Descripción del local
+  services: string[]; // Lista de servicios que ofrece el local
+}
+
+export const newRoom = async (
+  room: RoomDTO,
+) => {
+  try {
+    const response = await axiosInstance.post<JsonResponseToken<IRoom>>(`rooms/room`, {...room} );
     const data = response.data;
 
     return data.data;

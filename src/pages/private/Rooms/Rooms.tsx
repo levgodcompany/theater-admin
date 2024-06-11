@@ -8,11 +8,14 @@ import OpeningHours from "./components/OpeningHours/OpeningHours";
 import ServicesList from "./components/ServicesList/ServicesList";
 import HighlightedImages from "./components/HighlightedImages/HighlightedImages";
 import { getRoomsHTTP, IRoom } from "./services/Rooms.service";
-import { useEffect, useRef, useState } from "react";
-import { useReactToPrint } from "react-to-print";
+import { useEffect, useState } from "react";
+import NewRoom from "./components/NewRoom/NewRoom";
+
 
 const RoomDetails = () => {
   const [rooms, setRooms] = useState<IRoom[]>();
+
+  const [isNewRoom, setIsNewRoom] = useState<boolean>(false)
 
   const getRooms = async () => {
     const roomhttp = await getRoomsHTTP();
@@ -62,13 +65,17 @@ const RoomDetails = () => {
             ))}
 
             <div className={RoomsStyle.container_button_new}>
-              <button>Nueva Sala</button>
+              <button onClick={()=> setIsNewRoom(!isNewRoom)} >Nueva Sala</button>
             </div>
           </div>
         </>
       ) : (
         <></>
       )}
+
+      {
+        isNewRoom ? <><NewRoom /></> : <></>
+      }
     </>
   );
 };
