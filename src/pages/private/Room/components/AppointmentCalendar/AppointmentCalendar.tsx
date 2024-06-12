@@ -386,6 +386,7 @@ const AppointmentCalendar: React.FC<CalendarProps> = ({
         />
 
         <AppointmentModal
+          dto={dto}
           isOpen={modalIsOpen}
           event={selectedAppointment}
           onRequestClose={() => setModalIsOpen(false)}

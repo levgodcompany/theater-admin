@@ -24,7 +24,7 @@ const Sidebar = () => {
         <div>
           {!isSidebarOpen ? (
             <button className={SidebarStyle.toggle_btn} onClick={toggleSidebar}>
-              <p>Menu Theater</p>
+              <p>Menu Teatro</p>
               <img src={ArrowRrightImg} alt="" width="30" height="30" />
             </button>
           ) : (
@@ -36,7 +36,7 @@ const Sidebar = () => {
             <div className={SidebarStyle.Container_sidebar}>
               <div className={SidebarStyle.cont_title_open_sidebar}>
                 <h2 className={SidebarStyle.cont_title_open_sidebar_title}>
-                 Menu Theater
+                 Menu Teatro
                 </h2>
                 <button
                   className={`${SidebarStyle.toggle_btn_close}`}
@@ -52,19 +52,10 @@ const Sidebar = () => {
                     <span>Local</span>
                   </li>
                   <li  onClick={()=> redirect(PrivateRoutes.ROOMS)} className={SidebarStyle.li_container}>
-                    <span>Rooms</span>
-                  </li>
-                  <li  onClick={()=> redirect(PrivateRoutes.SHIFTS)} className={SidebarStyle.li_container}>
-                    <span>Turnos</span>
+                    <span>Salas</span>
                   </li>
                   <li onClick={()=> redirect(PrivateRoutes.CLIENTS)} className={SidebarStyle.li_container}>
-                    <span>Clients</span>
-                  </li>
-                  <li onClick={()=> redirect(PrivateRoutes.HOME)} className={SidebarStyle.li_container}>
-                    <span>Empleados</span>
-                  </li>
-                  <li onClick={()=> redirect(PrivateRoutes.HOME)} className={SidebarStyle.li_container}>
-                    <span>Events</span>
+                    <span>Clientes</span>
                   </li>
                 </nav>
               </div>

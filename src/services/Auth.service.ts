@@ -35,4 +35,16 @@ class AuthService {
     }
 }
 
+
+const  register =  async  (token: string) => {
+  try {
+      const response = await axiosInstance.post<JsonResponseToken<IOwner>>(`auth/register/owner`, );
+      const data = response.data;
+      return data.data;
+    } catch (error) {
+      console.error("Error loging in:", error);
+      // Manejar el error de forma adecuada
+    }
+}
+
 export default new AuthService()

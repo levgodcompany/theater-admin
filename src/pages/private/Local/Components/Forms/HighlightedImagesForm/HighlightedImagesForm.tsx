@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
-import "./css/HighlightedImagesForm.css";
+import HighlightedImagesFormStyle from "./css/HighlightedImagesForm.module.css";
 import { useAppSelector } from "../../../../../../redux/hooks";
 import { editLocal, ILocal } from "../../../services/Local.service";
 
@@ -56,35 +56,35 @@ const ImageFormModal: React.FC<ImageFormModalProps> = ({ isOpen, onClose, onSave
       isOpen={isOpen}
       onRequestClose={onClose}
       contentLabel="Editar Imágenes"
-      className="modal"
-      overlayClassName="modal-overlay"
+      className={HighlightedImagesFormStyle.modal}
+      overlayClassName={HighlightedImagesFormStyle.modal_overlay}
     >
-      <button className="close-button" onClick={onClose}>
+      <button className={HighlightedImagesFormStyle.close_button} onClick={onClose}>
         X
       </button>
       <h2>Editar Imágenes</h2>
-      <div className="image-form">
+      <div className={HighlightedImagesFormStyle.image_form}>
         {localImages.map((image, index) => (
-          <div key={index} className="image-form-group">
+          <div key={index} className={HighlightedImagesFormStyle.image_form_group}>
             <input
               type="text"
               placeholder="URL de la imagen"
               value={image.url}
               onChange={(e) => handleChange(index, "url", e.target.value)}
             />
-            {image.url && <img src={image.url} alt="Preview" className="image-preview" />}
+            {image.url && <img src={image.url} alt="Preview" className={HighlightedImagesFormStyle.image_preview} />}
             <input
               type="text"
               placeholder="Descripción de la imagen"
               value={image.description || ""}
               onChange={(e) => handleChange(index, "description", e.target.value)}
             />
-            <button onClick={() => handleRemoveImage(index)} className="remove-button">Eliminar</button>
+            <button onClick={() => handleRemoveImage(index)} className={HighlightedImagesFormStyle.remove_button}>Eliminar</button>
           </div>
         ))}
-        <button onClick={handleAddImage} className="add-button">Agregar Imagen</button>
+        <button onClick={handleAddImage} className={HighlightedImagesFormStyle.add_button}>Agregar Imagen</button>
       </div>
-      <button onClick={handleSave} className="save-button">Guardar</button>
+      <button onClick={handleSave} className={HighlightedImagesFormStyle.save_button}>Guardar</button>
     </Modal>
   );
 };

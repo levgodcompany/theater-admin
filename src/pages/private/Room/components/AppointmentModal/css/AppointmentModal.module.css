@@ -238,3 +238,16 @@ input {
   display: flex;
   justify-content: flex-end;
 }
+
+.p_dto {
+  font-size: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  align-items: center;
+}
+
+.p_span_dto {
+  text-decoration: line-through;
+  color: #918f8f;
+}

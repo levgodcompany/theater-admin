@@ -39,9 +39,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
 }) => {
   const [title, setTitle] = useState(event.title || "");
   const [available, setAvailable] = useState<boolean>(event.available);
-  const [isAplicDtoCheck, setIsAplicDtoCheck] = useState<boolean>(
-    event.available
-  );
+  const [isAplicDtoCheck, setIsAplicDtoCheck] = useState<boolean>(false);
   const [description, setDescription] = useState(event.description || "");
   const [start, setStart] = useState(event.start as Date);
   const [end, setEnd] = useState(event.end as Date);

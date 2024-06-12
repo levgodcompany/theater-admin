@@ -10,6 +10,8 @@ const initialState: IOwner = {
     token: ''
   };
 
+  export const OwnerKey = "owner";
+
   export const ownerSlice = createSlice({
     name: "owner",
     initialState: initialState,

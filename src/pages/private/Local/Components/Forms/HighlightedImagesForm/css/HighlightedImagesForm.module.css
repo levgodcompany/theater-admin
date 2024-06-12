@@ -1,6 +1,6 @@
 /* ImageFormModal.css */
 
-.modal-overlay {
+.modal_overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -28,7 +28,7 @@
   overflow: auto;
 }
 
-.close-button {
+.close_button {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -42,18 +42,18 @@ h2 {
   margin-bottom: 20px;
 }
 
-.image-form {
+.image_form {
   display: flex;
   flex-direction: column;
 }
 
-.image-form-group {
+.image_form-group {
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
 }
 
-.image-form-group input {
+.image_form-group input {
   margin-bottom: 10px;
   padding: 8px;
   border: 1px solid #ccc;
@@ -61,7 +61,7 @@ h2 {
   width: 100%;
 }
 
-.image-preview {
+.image_preview {
   max-width: 100%;
   height: auto;
   margin-bottom: 10px;
@@ -69,9 +69,9 @@ h2 {
   border-radius: 4px;
 }
 
-.add-button,
-.save-button,
-.remove-button {
+.add_button,
+.save_button,
+.remove_button {
   background-color: #007bff;
   color: white;
   border: none;
@@ -81,20 +81,20 @@ h2 {
   margin-top: 10px;
 }
 
-.remove-button {
+.remove_button {
   background-color: #dc3545;
 }
 
-.add-button {
+.add_button {
   background-color: #28a745;
 }
 
-.save-button {
+.save_button {
   align-self: flex-end;
 }
 
-.add-button:hover,
-.save-button:hover,
-.remove-button:hover {
+.add_button:hover,
+.save_button:hover,
+.remove_button:hover {
   opacity: 0.8;
 }

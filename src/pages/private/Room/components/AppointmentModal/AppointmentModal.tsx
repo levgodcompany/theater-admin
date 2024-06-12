@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import moment from "moment";
 import NewEventModalStyle from "./css/AppointmentModal.module.css";
-import { IAppointment } from "../../../Rooms/services/Rooms.service";
+import { DtoRoom, IAppointment } from "../../../Rooms/services/Rooms.service";
 import {
   ClientDTO,
   getClientsHTTP,
@@ -24,6 +24,7 @@ interface NewEventModalProps {
   capacity: number;
   event: IAppointment;
   price: number;
+  dto: DtoRoom[];
 }
 
 const AppointmentModal: React.FC<NewEventModalProps> = ({
@@ -35,6 +36,7 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
   event,
   capacity,
   price,
+  dto
 }) => {
   // State hooks for form fields
   const [title, setTitle] = useState(event.title);
@@ -68,6 +70,10 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
 
   const [clients, setClients] = useState<ClientDTO[]>([]);
   const [clientsRegister, setClientsRegister] = useState<ClientDTO[]>([]);
+
+  const [isAplicDtoCheck, setIsAplicDtoCheck] = useState<boolean>(false);
+
+  const [isAplicDto, setIsAplicDto] = useState<DtoRoom | null>(null);
 
   // Effect to sync event data with state
   useEffect(() => {
@@ -246,13 +252,28 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
         "Tienes que agregar a un organizador para poder invitar a más gente"
       );
     } else {
+      let val = 0;
+
+      if (inputValuePrice > 0) {
+        val = inputValuePrice;
+      } else {
+        val = price;
+      }
+
+      if (isAplicDto && isAplicDtoCheck) {
+        if (inputValuePrice > 0) {
+          val = inputValuePrice - (isAplicDto.dto / 100) * inputValuePrice;
+        } else {
+          val = price - (isAplicDto.dto / 100) * price;
+        }
+      }
       onSave({
         ...event,
         title,
         start,
         end,
         description,
-        price: inputValuePrice == 0 ? price : inputValuePrice,
+        price: val,
         available,
         client: organizerId,
         GuestListClient: selectedClientIds,
@@ -301,15 +322,44 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
     setDescription(value);
   };
 
+  const isTimeWithinAnyRange = (
+    time: string,
+    rooms: DtoRoom[]
+  ): DtoRoom | null => {
+    return (
+      rooms.find((room) => {
+        const startTime = new Date(`1970-01-01T${room.startHour}:00`);
+        const endTime = new Date(`1970-01-01T${room.endHour}:00`);
+        const checkTime = new Date(`1970-01-01T${time}:00`);
+        console.log("checkTime > startTime", checkTime > startTime);
+        console.log("checkTime < endTime", checkTime < endTime);
+        return checkTime >= startTime && checkTime < endTime;
+      }) || null
+    );
+  };
+
   const handelDateStart = (e: React.ChangeEvent<HTMLInputElement>) => {
     const ahora = new Date();
     const val = new Date(e.target.value);
+
     if (
       val.getDay() >= ahora.getDay() &&
       val.getMonth() >= ahora.getMonth() &&
       val.getFullYear() >= ahora.getFullYear()
     ) {
+      const formattedTime = val.toTimeString().split(" ")[0]; // "HH:MM:SS"
+      const hourMinute = formattedTime.substring(0, 5); // "HH:MM"
+      console.log(dto);
+      const roomWithDiscount = isTimeWithinAnyRange(hourMinute, dto);
+      if (roomWithDiscount) {
+        setIsAplicDto(roomWithDiscount);
+      } else {
+        setIsAplicDto(null);
+      }
+
       setStart(val);
+    } else {
+      console.log("La fecha es anterior a la fecha actual");
     }
   };
 
@@ -321,6 +371,31 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
       val.getFullYear() >= start.getFullYear()
     ) {
       setEnd(val);
+    }
+  };
+
+
+  const viewDto = () => {
+    if (isAplicDto && isAplicDtoCheck) {
+      if (inputValuePrice > 0) {
+        return (
+          <p className={NewEventModalStyle.p_dto}>
+            <span className={NewEventModalStyle.p_span_dto}>
+              ${inputValuePrice}
+            </span>{" "}
+            <strong>
+              ${inputValuePrice - (isAplicDto.dto / 100) * inputValuePrice}
+            </strong>
+          </p>
+        );
+      }
+
+      return (
+        <p className={NewEventModalStyle.p_dto}>
+          <span className={NewEventModalStyle.p_span_dto}>${price}</span>{" "}
+          <strong>${price - (isAplicDto.dto / 100) * price}</strong>
+        </p>
+      );
     }
   };
 
@@ -454,110 +529,6 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
               </div>
             </div>
 
-            <div className={NewEventModalStyle.container_client}>
-              <div className={NewEventModalStyle.container_image_client}>
-                <img
-                  className={NewEventModalStyle.image_client}
-                  src={UsersImage}
-                  alt="Users"
-                />
-              </div>
-              <div className={NewEventModalStyle.autocomplete_select}>
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={handleInputChange}
-                  placeholder="Añade invitados"
-                  className={NewEventModalStyle.input}
-                />
-                {inputValue && (
-                  <ul className={NewEventModalStyle.options_list}>
-                    {filteredClients.length > 0 ? (
-                      filteredClients.map((client) => (
-                        <li
-                          key={client.id}
-                          onClick={() => handleOptionClick(client)}
-                          className={
-                            selectedClients.some(
-                              (selectedClient) =>
-                                selectedClient.id === client.id
-                            )
-                              ? NewEventModalStyle.disabled_option
-                              : ""
-                          }
-                        >
-                          <span>{client.name}</span>
-                          <span>{client.email}</span>
-                        </li>
-                      ))
-                    ) : (
-                      <li
-                        onClick={handleAddNewClient}
-                        className={NewEventModalStyle.add_option}
-                      >
-                        Add "{inputValue}"
-                      </li>
-                    )}
-                  </ul>
-                )}
-                <ul className={NewEventModalStyle.selected_options}>
-                  {selectedClients.map((client) => (
-                    <li
-                      key={client.id}
-                      className={NewEventModalStyle.selected_option}
-                    >
-                      {client.name === "" ? (
-                        <>
-                          {isOpenNewNotClient ? (
-                            <div
-                              className={NewEventModalStyle.container_addinfo}
-                            >
-                              <div>
-                                <input
-                                  type="text"
-                                  placeholder="Nombre completo"
-                                  onChange={handleInputNameNewNotClient}
-                                  value={newNotClient.name}
-                                />
-                                <button onClick={saveNewNotClient}>
-                                  Guardar
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <>
-                              <span>{client.email} *</span>
-                              <button
-                                onClick={() => addInfoNotClient(client)}
-                                className={NewEventModalStyle.remove_button}
-                              >
-                                Add Info
-                              </button>
-                            </>
-                          )}
-                          <button
-                            onClick={() => handleRemoveOption(client)}
-                            className={NewEventModalStyle.remove_button}
-                          >
-                            Remove
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <span>{client.name} *</span>
-                          <button
-                            onClick={() => handleRemoveOption(client)}
-                            className={NewEventModalStyle.remove_button}
-                          >
-                            Remove
-                          </button>
-                        </>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
 
             <div className={NewEventModalStyle.container_capacity_max}>
               <span>Precio del Turno</span>
@@ -586,6 +557,27 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
                 <strong>${price}</strong>
               </span>
             </div>
+
+            {isAplicDto != null ? (
+            <>
+              <div className={NewEventModalStyle.container_availability}>
+                <label className={NewEventModalStyle.availability_label}>
+                  Aplicar descuento del {isAplicDto.dto}%
+                </label>
+                <input
+                  type="checkbox"
+                  name="available"
+                  checked={isAplicDtoCheck}
+                  onChange={(e) => setIsAplicDtoCheck(e.target.checked)}
+                />
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+
+          {isAplicDtoCheck && isAplicDto ? viewDto() : <></>}
+
 
             <div className={NewEventModalStyle.container_availability}>
               <label className={NewEventModalStyle.availability_label}>
