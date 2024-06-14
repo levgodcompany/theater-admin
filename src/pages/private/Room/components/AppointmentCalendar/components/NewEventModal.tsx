@@ -5,6 +5,7 @@ import NewEventModalStyle from "./NewEventModal.module.css";
 import {
   DtoRoom,
   IAppointment,
+  IDtoAppointment,
 } from "../../../../Rooms/services/Rooms.service";
 import HoursImage from "../../../../../../assets/clock-svgrepo-com.svg";
 import DescriptionImage from "../../../../../../assets/text-description-svgrepo-com.svg";
@@ -207,11 +208,22 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
         val = price;
       }
 
+      let dtoApp: IDtoAppointment = {
+        dto: 0,
+        newPrice: 0,
+        prevPrice:0
+      }
       if (isAplicDto && isAplicDtoCheck) {
         if (inputValuePrice > 0) {
           val = inputValuePrice - (isAplicDto.dto / 100) * inputValuePrice;
+          dtoApp.dto = isAplicDto.dto;
+          dtoApp.newPrice = val;
+          dtoApp.prevPrice = inputValuePrice;
         } else {
           val = price - (isAplicDto.dto / 100) * price;
+          dtoApp.dto = isAplicDto.dto;
+          dtoApp.newPrice = val;
+          dtoApp.prevPrice = price;
         }
       }
 
@@ -220,6 +232,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
         title,
         start,
         end,
+        dto: dtoApp.newPrice > 0 && dtoApp.prevPrice > 0 ? dtoApp : null,
         description,
         available,
         price: val,
@@ -278,9 +291,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   const handelDateStart = (e: React.ChangeEvent<HTMLInputElement>) => {
     const ahora = new Date();
     const val = new Date(e.target.value);
-
     if (
-      val.getDay() >= ahora.getDay() &&
       val.getMonth() >= ahora.getMonth() &&
       val.getFullYear() >= ahora.getFullYear()
     ) {

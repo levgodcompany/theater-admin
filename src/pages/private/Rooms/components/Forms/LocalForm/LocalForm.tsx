@@ -64,9 +64,15 @@ const LocalForm: React.FC<FormModalProps> = ({
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleChangeCap = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: Number.parseInt(value) });
+  };
+
   const editetLocal = async (room: Partial<IRoom>)=> {
-    const result = await  updateRoomHTTP(idRoom, room);
-    console.log(result);
+    await  updateRoomHTTP(idRoom, room);
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -76,6 +82,7 @@ const LocalForm: React.FC<FormModalProps> = ({
     editetLocal({
         name: formData.title,
         description: formData.description,
+        capacity: formData.capacity,
         mainImage: {
             url: formData.image
         },
@@ -126,7 +133,7 @@ const LocalForm: React.FC<FormModalProps> = ({
             type="number"
             name="capacity"
             value={formData.capacity}
-            onChange={handleChange}
+            onChange={handleChangeCap}
           />
         </label>
         <label>
