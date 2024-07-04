@@ -62,7 +62,10 @@ export interface IRoom {
   additionalImages: IImage[]; // Lista de imágenes adicionales del local
   description: string; // Descripción del local
   services: string[]; // Lista de servicios que ofrece el local
-  dtoRoomHours: DtoRoom[]
+  dtoRoomHours: DtoRoom[];
+  length: number;
+  Width: number;
+  typeRoom: string;
 }
 
 export interface IImage {
@@ -112,7 +115,10 @@ export interface RoomDTO {
   additionalImages: IImage[]; // Lista de imágenes adicionales del local
   description: string; // Descripción del local
   services: string[]; // Lista de servicios que ofrece el local
-  dtoRoomHours: DtoRoom[]
+  dtoRoomHours: DtoRoom[];
+  length: number;
+  Width: number;
+  typeRoom: string;
 }
 
 export const newRoom = async (
@@ -135,6 +141,21 @@ export const updateRoomHTTP = async (idRoom: string, room: Partial<IRoom>) => {
     const response = await axiosInstance.put<JsonResponseToken<IRoom>>(
       `rooms/room/${idRoom}`,
       { ...room }
+    );
+    const data = response.data;
+    console.log(data);
+
+    return data.data;
+  } catch (error) {
+    console.error("Error loging in:", error);
+    // Manejar el error de forma adecuada
+  }
+};
+
+export const deleteRoomHTTP = async (idRoom: string) => {
+  try {
+    const response = await axiosInstance.delete<JsonResponseToken<IRoom>>(
+      `rooms/room/${idRoom}`
     );
     const data = response.data;
     console.log(data);

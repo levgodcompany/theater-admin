@@ -20,6 +20,7 @@ const Sidebar = () => {
 
   return (
     <>
+    
       <div>
         <div>
           {!isSidebarOpen ? (
@@ -53,6 +54,9 @@ const Sidebar = () => {
                   </li>
                   <li  onClick={()=> redirect(PrivateRoutes.ROOMS)} className={SidebarStyle.li_container}>
                     <span>Salas</span>
+                  </li>
+                  <li  onClick={()=> redirect(PrivateRoutes.SHIFTS)} className={SidebarStyle.li_container}>
+                    <span>Turnos</span>
                   </li>
                   <li onClick={()=> redirect(PrivateRoutes.CLIENTS)} className={SidebarStyle.li_container}>
                     <span>Clientes</span>

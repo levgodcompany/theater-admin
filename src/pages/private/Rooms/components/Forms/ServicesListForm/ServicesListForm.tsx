@@ -23,7 +23,6 @@ const ServicesModal: React.FC<ServicesModalProps> = ({ isOpen, onRequestClose, s
   };
 
   useEffect(()=> {
-    console.log("services", services)
     setEditedServices([...services])
   }, [services])
 

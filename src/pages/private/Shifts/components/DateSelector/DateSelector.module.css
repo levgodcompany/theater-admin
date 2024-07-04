@@ -17,7 +17,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 10px;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 /* Botones de navegación */
@@ -72,8 +72,9 @@
 .calendar th,
 .calendar td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 10px;
   text-align: center;
+  font-size: 12px;
 }
 
 /* Estilos para los encabezados del calendario */

@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
-import { getLocal, IImage, ILocal } from "./services/Local.service";
+import { getLocal, IImage } from "./services/Local.service";
 import { Header } from "../../../components/Header/Header";
 import LocalStyle from "./css/Local.module.css";
 import Card from "./Components/Card_B/InfoLocal";
 import HighlightedImages from "./Components/HighlightedImages/HighlightedImages";
-import OpeningHours from "./Components/OpeningHours/OpeningHours";
 import ServicesList from "./Components/ServicesList/ServicesList";
 import { createLocal } from "../../../redux/slices/Local.slice";
 
@@ -118,9 +117,7 @@ const Local = () => {
                 description={local.description}
               />
             </section>
-            <section>
-              <OpeningHours openingDays={local.openingHours} />
-            </section>
+            
             <section>
               <ServicesList services={local.services} />
             </section>

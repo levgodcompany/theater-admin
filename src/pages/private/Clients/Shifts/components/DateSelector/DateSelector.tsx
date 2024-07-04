@@ -1,7 +1,7 @@
 // DateSelector.tsx
 import React, { useEffect, useState } from "react";
 import DateSelectorStyle from "./DateSelector.module.css";
-import CarouselComp from "../../../../../components/CarouselComponents/CarouselComp";
+import Shift from "./components/Shift/Shift";
 
 interface ISelects {
   id: string;
@@ -11,10 +11,10 @@ interface ISelects {
 }
 
 interface IDateSelectorProps {
-  daysSelect: (days: ISelects[])=> void
+  daysSelect: (days: ISelects[]) => void;
 }
 
-const DateSelector: React.FC<IDateSelectorProps> = ({daysSelect}) => {
+const DateSelector: React.FC<IDateSelectorProps> = ({ daysSelect }) => {
   const [selectedMonth, setSelectedMonth] = useState<number>(
     new Date().getMonth()
   );
@@ -24,35 +24,16 @@ const DateSelector: React.FC<IDateSelectorProps> = ({daysSelect}) => {
   const [selectedDays, setSelectedDays] = useState<number[]>([]);
   const [selectedDateList, setSelectedDateList] = useState<ISelects[]>([]);
 
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false)
+
   const daysInMonth = (month: number, year: number) => {
     return new Date(year, month + 1, 0).getDate();
   };
 
-  const handlePreviousMonth = () => {
-    setSelectedMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1));
-    setSelectedYear((prevYear) =>
-      selectedMonth === 0 ? prevYear - 1 : prevYear
-    );
-  };
-
-  const handleNextMonth = () => {
-    setSelectedMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1));
-    setSelectedYear((prevYear) =>
-      selectedMonth === 11 ? prevYear + 1 : prevYear
-    );
-  };
-
-  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(parseInt(event.target.value));
-  };
-
-  useEffect(()=> {
+  useEffect(() => {
     daysSelect(selectedDateList);
-  }, [selectedDateList])
-
-  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedYear(parseInt(event.target.value));
-  };
+  }, [selectedDateList]);
 
   const handleDayClick = (day: number) => {
     setSelectedDays((prevSelectedDays) => {
@@ -87,7 +68,8 @@ const DateSelector: React.FC<IDateSelectorProps> = ({daysSelect}) => {
 
       return [...prevList];
     });
-    setSelectedDays([]);
+    setIsOpen(true);
+    setIsOpenModal(true);
   };
 
   const renderCalendar = () => {
@@ -139,88 +121,20 @@ const DateSelector: React.FC<IDateSelectorProps> = ({daysSelect}) => {
     );
   };
 
-  const handleClicEditDays = (selections: ISelects) => {
-    const days = selections.days.map((d) => {
-      const day = Number.parseInt(d.split("-")[2]);
-      return day;
-    });
-    setSelectedYear(selections.year);
-    setSelectedMonth(selections.month - 1);
-    setSelectedDays(days);
-  };
-
-  const handleClicDeleteDays = (idSelectDaty: string) => {
-    setSelectedDateList((prevDay) => {
-      const filterDay = prevDay.filter((day) => day.id != idSelectDaty);
-      return [...filterDay];
-    });
-  };
-
-  const renderDaysSelect = (days: string[]) => {
-    const daysNumber = days
-      .map((d) => Number.parseInt(d.split("-")[2]))
-      .sort((a, b) => a - b);
-
-    return (
-      <>
-        {daysNumber.map((d) => (
-          <span>{d}</span>
-        ))}
-      </>
-    );
-  };
-
-  const renderSelectedDateList = () => {
-
-    
-    return (
-      <>
-        <CarouselComp
-          items={selectedDateList}
-          renderCard={(date) => (
-            <div className={DateSelectorStyle.selected_date_list}>
-              {
-                <div className={DateSelectorStyle.container_date} key={date.id}>
-                  <div className={DateSelectorStyle.container_date_header}>
-                    <p>
-                      {capitalizeFirstLetter(
-                        new Date(date.year, date.month - 1).toLocaleDateString(
-                          "default",
-                          { month: "long" }
-                        )
-                      )}{" "}
-                      - {date.year}
-                    </p>
-                  </div>
-                  <div className={DateSelectorStyle.container_main}>
-                    {renderDaysSelect(date.days)}
-                  </div>
-                  <div className={DateSelectorStyle.container_date_buttons}>
-                    <button onClick={() => handleClicEditDays(date)}>
-                      Editar
-                    </button>
-                    <button onClick={() => handleClicDeleteDays(date.id)}>
-                      Eliminar
-                    </button>
-                  </div>
-                </div>
-              }
-            </div>
-          )}
-        />
-      </>
-    );
-  };
-
   function capitalizeFirstLetter(str: string) {
     return str.charAt(0).toUpperCase() + str.substring(1);
+  }
+
+
+  const onRequestClose = ()=> {
+    setIsOpen(false);
+    setIsOpenModal(false);
   }
 
   return (
     <div className={DateSelectorStyle.date_selector}>
       <div className={DateSelectorStyle.container_calendar}>
         <div className={DateSelectorStyle.nav_container}>
-
           <h3 className={DateSelectorStyle.header_caledar}>
             {capitalizeFirstLetter(
               new Date(selectedYear, selectedMonth).toLocaleDateString(
@@ -229,19 +143,9 @@ const DateSelector: React.FC<IDateSelectorProps> = ({daysSelect}) => {
               )
             )}
             <div className={DateSelectorStyle.select_container}>
-              <span>
-              {Array.from(
-                  { length: 1 },
-                  (_, i) => new Date().getFullYear() + i
-                ).map((year) => (
-                  <>
-                    {year}
-                  </>
-                ))}
-              </span>
+              <span>{new Date().getFullYear()}</span>
             </div>
           </h3>
-          
         </div>
 
         <div className={DateSelectorStyle.calendar_container}>
@@ -251,11 +155,11 @@ const DateSelector: React.FC<IDateSelectorProps> = ({daysSelect}) => {
           <button onClick={handleAddButtonClick}>Agregar</button>
         </div>
       </div>
-
-      <div className={DateSelectorStyle.selected_date_container}>
-        <p>Días seleccionados:</p>
-        {renderSelectedDateList()}
-      </div>
+      <>
+      {
+        isOpenModal ? <Shift isOpen={isOpen} onRequestClose={onRequestClose} /> : <></>
+      }
+      </>
     </div>
   );
 };

@@ -35,10 +35,6 @@
     flex-direction: column;
   }
   
-  .modal label {
-    margin-bottom: 10px;
-  }
-  
   .modal input,
   .modal textarea {
     width: 97%;
@@ -71,3 +67,67 @@
     color: white;
   }
   
+
+  .container_dto_hors {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  
+  .container_list_dto_hors {
+  
+  }
+  
+  .new_dto_hors {
+    box-shadow: 0 0px 4px 0px rgba(0, 0, 0, 0.1);
+    background-color: #ebebeb;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .dto_hors_info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+  }
+  .contianer_dto_hors_info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 14px;
+  }
+  
+  .contianer_dto_hors_info_button {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .dto_hors_info_info {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+  
+  .dto_hors_info_info > strong {
+  
+  }
+
+  .lavel_abierto, .label_hours_open, .label_hours_close, .label_data_room {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    align-items: center;
+    border-bottom: 1px solid lightgrey;
+}
+
+.lavel_abierto > input {
+  border: none;
+  display: flex;
+  color: #686b6e;
+  padding: 10px;
+  width: 65px;
+  margin: 3px;
+}

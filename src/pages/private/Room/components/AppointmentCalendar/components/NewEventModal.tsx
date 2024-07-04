@@ -14,7 +14,6 @@ import {
   ClientDTO,
   getClientsHTTP,
   getClientsRegisterHTTP,
-  postNotClientsHTTP,
 } from "../../../service/Room.service";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -45,7 +44,6 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
   const [start, setStart] = useState(event.start as Date);
   const [end, setEnd] = useState(event.end as Date);
 
-  const [inputValue, setInputValue] = useState<string>("");
   const [inputValuePrice, setInputValuePrice] = useState<number>(price);
   const [inputValueOrganizer, setInputValueOrganizer] = useState<string>("");
   const [selectedClients, setSelectedClients] = useState<ClientDTO[]>([]);
@@ -59,14 +57,6 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
       isRegister: true,
     });
 
-  const [isOpenNewNotClient, setIsOpenNewNotClient] = useState<boolean>(false);
-  const [newNotClient, setNewNotClient] = useState<ClientDTO>({
-    id: "",
-    name: "",
-    email: "",
-    phone: "",
-    isRegister: false,
-  });
 
   const [clients, setClients] = useState<ClientDTO[]>([]);
   const [clientsRegister, setClientsRegister] = useState<ClientDTO[]>([]);
@@ -89,9 +79,6 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
     fetchClients();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
 
   const handleInputPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValuePrice(Number.parseInt(e.target.value));
@@ -103,28 +90,11 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
     setInputValueOrganizer(e.target.value);
   };
 
-  const handleOptionClick = (client: ClientDTO) => {
-    if (
-      !selectedClients.some(
-        (selectedClient) => selectedClient.id === client.id
-      ) &&
-      selectedClients.length + 2 <= capacity
-    ) {
-      setSelectedClients((prev) => [...prev, client]);
-    }
-    setInputValue("");
-  };
-
   const handleOptionOrganizerClick = (client: ClientDTO) => {
     setSelectedClientOrganizer(client);
     setInputValueOrganizer("");
   };
 
-  const handleRemoveOption = (client: ClientDTO) => {
-    setSelectedClients((prev) =>
-      prev.filter((selectedClient) => selectedClient.email !== client.email)
-    );
-  };
 
   const handleRemoveOrganizerOption = () => {
     setSelectedClientOrganizer({
@@ -136,47 +106,11 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
     });
   };
 
-  const filteredClients = clients.filter(
-    (client) =>
-      client.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-      client.email.toLowerCase().includes(inputValue.toLowerCase())
-  );
-
   const filteredClientsRegister = clientsRegister.filter(
     (client) =>
       client.name.toLowerCase().includes(inputValueOrganizer.toLowerCase()) ||
       client.email.toLowerCase().includes(inputValueOrganizer.toLowerCase())
   );
-
-  const isValidEmail = (email: string): boolean => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-  };
-
-  const handleAddNewClient = () => {
-    if (isValidEmail(inputValue) && selectedClients.length + 2 <= capacity) {
-      const newClient: ClientDTO = {
-        id: "",
-        name: "",
-        email: inputValue,
-        phone: "",
-        isRegister: false,
-      };
-
-      const isEmailInList = selectedClients.some(
-        (client) => client.email.toLowerCase() === inputValue.toLowerCase()
-      );
-
-      if (isEmailInList) {
-        alert("El correo ya está registrado en la lista");
-      } else {
-        setSelectedClients((prev) => [...prev, newClient]);
-        setInputValue("");
-      }
-    } else {
-      alert("Correo electrónico no válido");
-    }
-  };
 
   const handleSave = () => {
     const idClientOrg =
@@ -243,34 +177,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
     }
   };
 
-  const addInfoNotClient = (client: ClientDTO) => {
-    setIsOpenNewNotClient(true);
-    setNewNotClient(client);
-  };
 
-  const saveNewNotClient = async () => {
-    try {
-      await postNotClientsHTTP(newNotClient);
-      setSelectedClients((prev) =>
-        prev.map((client) =>
-          client.email === newNotClient.email ? newNotClient : client
-        )
-      );
-      setClients((prev) => [...prev, newNotClient]);
-      setIsOpenNewNotClient(false);
-    } catch (error) {
-      console.error("Error saving new client:", error);
-    }
-  };
-
-  const handleInputNameNewNotClient = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNewNotClient((prev) => ({
-      ...prev,
-      name: e.target.value,
-    }));
-  };
 
   const isTimeWithinAnyRange = (
     time: string,

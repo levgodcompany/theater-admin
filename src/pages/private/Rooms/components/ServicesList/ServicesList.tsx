@@ -30,7 +30,7 @@ const ServicesList: React.FC<ServicesListProps> = ({ services, idRoom }) => {
   return (
     <div className={ServiceStyle.services_list}>
       <div className={ServiceStyle.header}>
-        <h2>Servicios que ofrece la sala</h2>
+        <h2 style={{fontSize: "16px"}}>Servicios que ofrece la sala</h2>
         <img onClick={handleOpenModal} src={editImage} alt="" /> 
         <ServicesModal
         services={services}

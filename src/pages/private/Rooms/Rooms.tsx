@@ -4,10 +4,9 @@ import AppointmentCalendar from "./components/AppointmentCalendar/AppointmentCal
 import InfoRoom from "./components/Card_B/InfoRoom";
 import { Header } from "../../../components/Header/Header";
 import Sidebar from "../../../components/Sidebar/Sidebar";
-import OpeningHours from "./components/OpeningHours/OpeningHours";
 import ServicesList from "./components/ServicesList/ServicesList";
 import HighlightedImages from "./components/HighlightedImages/HighlightedImages";
-import { getRoomsHTTP, IRoom } from "./services/Rooms.service";
+import { deleteRoomHTTP, getRoomsHTTP, IRoom } from "./services/Rooms.service";
 import { useEffect, useState } from "react";
 import NewRoom from "./components/NewRoom/NewRoom";
 
@@ -27,6 +26,19 @@ const RoomDetails = () => {
     getRooms();
   }, []);
 
+  const deleteRoom = async (idRoom:string)=> {
+    await deleteRoomHTTP(idRoom)
+  }
+
+  const lodadRooms = () => {
+    getRooms()
+  }
+
+  const closeNewRoom = () => {
+    setIsNewRoom(false)
+  }
+
+
   return (
     <>
       <Header />
@@ -39,17 +51,17 @@ const RoomDetails = () => {
               <div key={room.name} className={RoomsStyle.room_details}>
                 <InfoRoom
                   idRoom={room._id}
+                  typeRoom={room.typeRoom}
                   image= {room.mainImage.url}
                   capacity={room.capacity}
                   description={room.description}
                   phone={room.phone}
                   title={room.name}
                   price={room.priceBase}
-                />
-
-                <OpeningHours
-                  idRoom={room._id}
-                  openingDays={room.openingHours}
+                  Width={room.Width}
+                  length={room.length}
+                  loadRoom={lodadRooms}
+                  dtos={room.dtoRoomHours}
                 />
 
                 <ServicesList idRoom={room._id} services={room.services} />
@@ -57,9 +69,6 @@ const RoomDetails = () => {
                 <HighlightedImages
                   idRoom={room._id}
                   images={room.additionalImages}
-                  onViewMore={(index) => console.log("A ver mas", index)}
-                  onEdit={(index) => console.log("A editar", index)}
-                  onDelete={(index) => console.log("A eliminar", index)}
                 />
 
                 <AppointmentCalendar
@@ -67,7 +76,7 @@ const RoomDetails = () => {
                   idRoom={room._id}
                 />
                 <div className={RoomsStyle.container_button_delete_room}>
-                  <button>Eliminar Sala</button>
+                  <button onClick={()=> deleteRoom(room._id)}>Eliminar Sala</button>
                 </div>
               </div>
             ))}
@@ -85,7 +94,7 @@ const RoomDetails = () => {
 
       {isNewRoom ? (
         <>
-          <NewRoom />
+          <NewRoom closeNewRoom={closeNewRoom} loadRoom={lodadRooms} />
         </>
       ) : (
         <></>

@@ -7,8 +7,6 @@ import { getRoomHTTP } from "./service/Room.service";
 import AppointmentCalendar from "./components/AppointmentCalendar/AppointmentCalendar";
 import RoomStyle from "./css/Room.module.css"
 import Sidebar from "../../../components/Sidebar/Sidebar";
-import DateSelector from "./components/DateSelector/DateSelector";
-import MyCalendar from "./components/AppointmentSelector/AppointmentSelector";
 
 interface ISelects {
   id: string;
@@ -28,6 +26,9 @@ const Room = () => {
     availableAppointments: [], // Lista de turnos disponibles en la sala
     phone: "", // Número de teléfono del local
     priceBase: 0,
+    length: 0,
+    Width: 0,
+    typeRoom: "",
     dtoRoomHours: [],
     openingHours: {
       monday: {
@@ -141,7 +142,15 @@ const Room = () => {
             phone={room.phone}
             title={room.name}
             price={room.priceBase}
+            Width={room.Width}
+            dtos={room.dtoRoomHours}
+            length={room.length}
+            loadRoom={()=>{}}
+            typeRoom={room.typeRoom}
           />
+          <div>
+            <p>Reservar</p>
+          </div>
           <div className={RoomStyle.room_calendar}>
             <AppointmentCalendar
               _appointments={room.availableAppointments}

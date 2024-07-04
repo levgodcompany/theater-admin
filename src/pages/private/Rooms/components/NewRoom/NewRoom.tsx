@@ -20,33 +20,18 @@ interface FormData {
   description: string;
   capacity: number;
   priceBase: number;
+  length: number;
+  Width: number;
+  typeRoom: string;
 }
 
-const NewRoom = () => {
-  const [room, setRoom] = useState<IRoom>({
-    _id: "",
-    priceBase: 0,
-    name: "",
-    capacity: 0,
-    dtoRoomHours: [],
-    availableAppointments: [],
-    phone: "",
-    openingHours: {
-      monday: { isOpen: false, open: "", close: "" },
-      tuesday: { isOpen: false, open: "", close: "" },
-      wednesday: { isOpen: false, open: "", close: "" },
-      thursday: { isOpen: false, open: "", close: "" },
-      friday: { isOpen: false, open: "", close: "" },
-      sunday: { isOpen: false, open: "", close: "" },
-      saturday: { isOpen: false, open: "", close: "" },
-    },
-    mainImage: {
-      url: "",
-    },
-    additionalImages: [],
-    description: "",
-    services: [],
-  });
+interface NewRoomProps {
+  loadRoom:  ()=> void;
+  closeNewRoom: ()=> void;
+}
+
+const NewRoom: React.FC<NewRoomProps> = ({loadRoom, closeNewRoom}) => {
+
 
   const [formData, setFormData] = useState<FormData>({
     image: "",
@@ -57,6 +42,9 @@ const NewRoom = () => {
     description: "",
     capacity: 0,
     priceBase: 0,
+    length: 0,
+    Width: 0,
+    typeRoom: ""
   });
 
   const [openingHours, setOpeningHours] = useState<IOpeningDays>({
@@ -103,12 +91,15 @@ const NewRoom = () => {
       mainImage: localImages.length > 0 ? localImages[0] : { url: "" },
       additionalImages: localImages,
       services: editedServices,
-      dtoRoomHours: schedules
+      dtoRoomHours: schedules,
+      length: formData.length,
+      Width: formData.Width,
+      typeRoom: formData.typeRoom
+      
     };
-
-    console.log(roomSave)
-
-    const res = await newRoom(roomSave);
+    await newRoom(roomSave);
+    loadRoom();
+    closeNewRoom()
   };
 
   const handleChangeDataRoom = (
@@ -116,6 +107,13 @@ const NewRoom = () => {
   ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleChangeDataRoomNumber = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: Number.parseInt(value) });
   };
 
   const dayParse = (d: string) => {
@@ -180,31 +178,32 @@ const NewRoom = () => {
     setLocalImages(newImages);
   };
 
-  const isOverlapping = (newSchedule: DtoRoom, existingSchedules: DtoRoom[]): boolean => {
+  const isOverlapping = (
+    newSchedule: DtoRoom,
+    existingSchedules: DtoRoom[]
+  ): boolean => {
     const newStart = new Date(`1970-01-01T${newSchedule.startHour}:00`);
     const newEnd = new Date(`1970-01-01T${newSchedule.endHour}:00`);
 
-    return existingSchedules.some(schedule => {
+    return existingSchedules.some((schedule) => {
       const existingStart = new Date(`1970-01-01T${schedule.startHour}:00`);
       const existingEnd = new Date(`1970-01-01T${schedule.endHour}:00`);
 
-      return (newStart < existingEnd && newEnd > existingStart);
+      return newStart < existingEnd && newEnd > existingStart;
     });
   };
-
 
   const handleAddHours = (e: React.FormEvent) => {
     e.preventDefault();
     if (isOverlapping(form, schedules)) {
-      alert('El horario ingresado se solapa con un horario existente.');
+      alert("El horario ingresado se solapa con un horario existente.");
     } else {
       setSchedules([...schedules, form]);
       setForm({
-        startHour: '',
-        endHour: '',
+        startHour: "",
+        endHour: "",
         dto: 0,
       });
-      
     }
   };
 
@@ -218,12 +217,59 @@ const NewRoom = () => {
           <p>Información del Local</p>
           <div className={NewRoomStyle.container_data_room}>
             <label className={NewRoomStyle.label_data_room}>
-              Titulo:
+              Titulo *:
               <input
                 type="text"
                 name="title"
                 value={formData.title}
                 onChange={handleChangeDataRoom}
+              />
+            </label>
+
+            <label className={NewRoomStyle.label_data_room}>
+              Typo de Sala *:
+              <input
+                type="text"
+                name="typeRoom"
+                value={formData.typeRoom}
+                onChange={handleChangeDataRoom}
+              />
+            </label>
+
+            <label className={NewRoomStyle.label_data_room}>
+              Precio Base *:
+              <input
+                type="number"
+                name="priceBase"
+                value={formData.priceBase}
+                onChange={handleChangeDataRoomNumber}
+              />
+            </label>
+            <label className={NewRoomStyle.label_data_room}>
+              Capacidad Máx. *:
+              <input
+                type="number"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChangeDataRoomNumber}
+              />
+            </label>
+            <label className={NewRoomStyle.label_data_room}>
+              Largo *:
+              <input
+                type="number"
+                name="length"
+                value={formData.length}
+                onChange={handleChangeDataRoomNumber}
+              />
+            </label>
+            <label className={NewRoomStyle.label_data_room}>
+              Ancho *:
+              <input
+                type="number"
+                name="Width"
+                value={formData.Width}
+                onChange={handleChangeDataRoomNumber}
               />
             </label>
             <label className={NewRoomStyle.label_data_room}>
@@ -236,90 +282,14 @@ const NewRoom = () => {
               />
             </label>
             <label className={NewRoomStyle.label_data_room}>
-              Precio Base:
-              <input
-                type="number"
-                name="priceBase"
-                value={formData.priceBase}
-                onChange={handleChangeDataRoom}
-              />
-            </label>
-            <label className={NewRoomStyle.label_data_room}>
-              Capacidad Máx.:
-              <input
-                type="number"
-                name="capacity"
-                value={formData.capacity}
-                onChange={handleChangeDataRoom}
-              />
-            </label>
-            <label className={NewRoomStyle.label_data_room}>
               Descripción:
               <textarea
-                name="description"
+                name="Descripción"
                 maxLength={300}
                 value={formData.description}
                 onChange={handleChangeDataRoom}
               ></textarea>
             </label>
-          </div>
-
-          {
-            // **** Horas ******
-          }
-          <p>Horarios</p>
-          <div>
-            {Object.keys(openingHours).map((day) => (
-              <div key={day} className={NewRoomStyle.day_section}>
-                <p className={NewRoomStyle.title_hour}>{dayParse(`${day}`)}</p>
-                <label className={NewRoomStyle.lavel_abierto}>
-                  Abierto:
-                  <input
-                    type="checkbox"
-                    checked={openingHours[day as keyof IOpeningDays].isOpen}
-                    onChange={(e) =>
-                      handleChangeDay(
-                        day as keyof IOpeningDays,
-                        "isOpen",
-                        e.target.checked
-                      )
-                    }
-                  />
-                </label>
-                {openingHours[day as keyof IOpeningDays].isOpen && (
-                  <div className={NewRoomStyle.hours}>
-                    <label className={NewRoomStyle.label_hours_open}>
-                      Hora de Apertura:
-                      <input
-                        type="time"
-                        value={openingHours[day as keyof IOpeningDays].open}
-                        onChange={(e) =>
-                          handleChangeDay(
-                            day as keyof IOpeningDays,
-                            "open",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </label>
-                    <label className={NewRoomStyle.label_hours_close}>
-                      Hora de Cierre:
-                      <input
-                        type="time"
-                        value={openingHours[day as keyof IOpeningDays].close}
-                        onChange={(e) =>
-                          handleChangeDay(
-                            day as keyof IOpeningDays,
-                            "close",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </label>
-                  </div>
-                )}
-              </div>
-            ))}
           </div>
 
           {formData.priceBase > 0 ? (
@@ -329,29 +299,52 @@ const NewRoom = () => {
               <div className={NewRoomStyle.container_dto_hors}>
                 <div className={NewRoomStyle.container_list_dto_hors}>
                   <h3>Horarios y Descuentos</h3>
-                    {schedules.map((schedule, index) => (
-                      <div key={index} className={NewRoomStyle.contianer_dto_hors_info} >
-                        <div>
+                  {schedules.map((schedule, index) => (
+                    <div
+                      key={index}
+                      className={NewRoomStyle.contianer_dto_hors_info}
+                    >
+                      <div>
                         <span>
-                          {schedule.startHour} - {schedule.endHour} 
+                          {schedule.startHour} - {schedule.endHour}
                         </span>
 
                         <div className={NewRoomStyle.dto_hors_info}>
-                          <p className={NewRoomStyle.dto_hors_info_info}><strong>Descuento (%):</strong><span>{schedule.dto}%</span></p>
-                          <p className={NewRoomStyle.dto_hors_info_info}><strong>Precio:</strong><span>${formData.priceBase}</span></p>
-                          <p className={NewRoomStyle.dto_hors_info_info}><strong>Total de Descuento:</strong><span>${((schedule.dto/100)*formData.priceBase)}</span></p>
-                          <p className={NewRoomStyle.dto_hors_info_info}><strong>Total:</strong><span><strong>${formData.priceBase-((schedule.dto/100)*formData.priceBase)}</strong></span></p>
+                          <p className={NewRoomStyle.dto_hors_info_info}>
+                            <strong>Descuento (%):</strong>
+                            <span>{schedule.dto}%</span>
+                          </p>
+                          <p className={NewRoomStyle.dto_hors_info_info}>
+                            <strong>Precio:</strong>
+                            <span>${formData.priceBase}</span>
+                          </p>
+                          <p className={NewRoomStyle.dto_hors_info_info}>
+                            <strong>Total de Descuento:</strong>
+                            <span>
+                              ${(schedule.dto / 100) * formData.priceBase}
+                            </span>
+                          </p>
+                          <p className={NewRoomStyle.dto_hors_info_info}>
+                            <strong>Total:</strong>
+                            <span>
+                              <strong>
+                                $
+                                {formData.priceBase -
+                                  (schedule.dto / 100) * formData.priceBase}
+                              </strong>
+                            </span>
+                          </p>
                         </div>
-
-                        </div>
-                        <div className={NewRoomStyle.contianer_dto_hors_info_button}>
-
+                      </div>
+                      <div
+                        className={NewRoomStyle.contianer_dto_hors_info_button}
+                      >
                         <button onClick={() => handleDeleteHors(index)}>
                           Eliminar
                         </button>
-                        </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
                 </div>
                 <div className={NewRoomStyle.new_dto_hors}>
                   <div>

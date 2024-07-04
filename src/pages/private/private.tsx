@@ -9,7 +9,7 @@ const Local = lazy(() => import("./Local/Local"));
 const Clients = lazy(() => import("./Clients/Clients"));
 const Rooms = lazy(() => import("./Rooms/Rooms"));
 const Room = lazy(() => import("./Room/Room"));
-const Shifts = lazy(() => import("./Shifts/Shifts"));
+const Shifts = lazy(() => import("./Clients/Shifts/Shifts"));
 
 function Private() {
   return (
