@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
+import { useState } from "react";
+import { useAppDispatch } from "../../../redux/hooks";
 import { useNavigate } from "react-router-dom";
 import formStyle from "./css/SingUp.module.css";
 import logo from "../../../assets/el_juvenil.svg";
@@ -50,22 +50,6 @@ const SingUp = () => {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const calculateAge = (birthDate: string): number => {
-    const today = new Date();
-    const birthDateObj = new Date(birthDate);
-    let age = today.getFullYear() - birthDateObj.getFullYear();
-    const monthDiff = today.getMonth() - birthDateObj.getMonth();
-
-    if (
-      monthDiff < 0 ||
-      (monthDiff === 0 && today.getDate() < birthDateObj.getDate())
-    ) {
-      age--;
-    }
-
-    return age;
   };
 
   return (

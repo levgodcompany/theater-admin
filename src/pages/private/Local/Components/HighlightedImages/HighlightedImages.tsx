@@ -7,22 +7,15 @@ import ImageFormModal from "../Forms/HighlightedImagesForm/HighlightedImagesForm
 
 interface HighlightedImagesProps {
   images: IImage[];
-  onDelete: (index: number) => void;
-  onEdit: (index: number) => void;
-  onViewMore: (index: number) => void;
 }
 
 const HighlightedImages: React.FC<HighlightedImagesProps> = ({
-  images,
-  onDelete,
-  onEdit,
-  onViewMore,
+  images
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  const handleSave = (newImages: IImage[]) => {};
 
   return (
     <div className={HighlightedImagesStyle.container}>
@@ -32,7 +25,6 @@ const HighlightedImages: React.FC<HighlightedImagesProps> = ({
         <ImageFormModal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
-          onSave={handleSave}
         />
       </div>
 

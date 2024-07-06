@@ -7,11 +7,9 @@ import {
   ClientDTO,
   getClientsHTTP,
   getClientsRegisterHTTP,
-  postNotClientsHTTP,
 } from "../../service/Room.service";
 import HoursImage from "../../../../../assets/clock-svgrepo-com.svg";
 import DescriptionImage from "../../../../../assets/text-description-svgrepo-com.svg";
-import UsersImage from "../../../../../assets/users.svg";
 import UserImage from "../../../../../assets/user-1-svgrepo-com.svg";
 import ReactQuill from "react-quill";
 
@@ -46,7 +44,6 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
   const [end, setEnd] = useState(event.end as Date);
 
   // State hooks for client management
-  const [inputValue, setInputValue] = useState<string>("");
   const [inputValuePrice, setInputValuePrice] = useState<number>(price);
   const [inputValueOrganizer, setInputValueOrganizer] = useState<string>("");
   const [selectedClients, setSelectedClients] = useState<ClientDTO[]>([]);
@@ -58,15 +55,6 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
       phone: "",
       isRegister: true,
     });
-
-  const [isOpenNewNotClient, setIsOpenNewNotClient] = useState<boolean>(false);
-  const [newNotClient, setNewNotClient] = useState<ClientDTO>({
-    id: "",
-    name: "",
-    email: "",
-    phone: "",
-    isRegister: false,
-  });
 
   const [clients, setClients] = useState<ClientDTO[]>([]);
   const [clientsRegister, setClientsRegister] = useState<ClientDTO[]>([]);
@@ -146,20 +134,10 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
   }, []);
 
   // Handlers for form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setInputValue(e.target.value);
+
+
   const handleInputOrganizerChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setInputValueOrganizer(e.target.value);
-
-  // Handler for selecting clients from the list
-  const handleOptionClick = (client: ClientDTO) => {
-    if (
-      !selectedClients.some((selectedClient) => selectedClient.id === client.id)
-    ) {
-      setSelectedClients((prev) => [...prev, client]);
-    }
-    setInputValue("");
-  };
 
   const handleInputPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValuePrice(Number.parseInt(e.target.value));
@@ -170,11 +148,6 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
     setInputValueOrganizer("");
   };
 
-  const handleRemoveOption = (client: ClientDTO) => {
-    setSelectedClients((prev) =>
-      prev.filter((selectedClient) => selectedClient.email !== client.email)
-    );
-  };
 
   const handleRemoveOrganizerOption = () => {
     setSelectedClientOrganizer({
@@ -186,48 +159,13 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
     });
   };
 
-  // Filter clients based on input values
-  const filteredClients = clients.filter(
-    (client) =>
-      client.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-      client.email.toLowerCase().includes(inputValue.toLowerCase())
-  );
+
 
   const filteredClientsRegister = clientsRegister.filter(
     (client) =>
       client.name.toLowerCase().includes(inputValueOrganizer.toLowerCase()) ||
       client.email.toLowerCase().includes(inputValueOrganizer.toLowerCase())
   );
-
-  const isValidEmail = (email: string): boolean => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(email);
-  };
-
-  const handleAddNewClient = () => {
-    if (isValidEmail(inputValue)) {
-      const newClient: ClientDTO = {
-        id: "",
-        name: "",
-        email: inputValue,
-        phone: "",
-        isRegister: false,
-      };
-
-      if (
-        selectedClients.some(
-          (client) => client.email.toLowerCase() === inputValue.toLowerCase()
-        )
-      ) {
-        alert("El correo ya está registrado en la lista");
-      } else {
-        setSelectedClients((prev) => [...prev, newClient]);
-        setInputValue("");
-      }
-    } else {
-      alert("Correo electrónico no válido");
-    }
-  };
 
   // Save handler for the modal
   const handleSave = () => {
@@ -287,32 +225,6 @@ const AppointmentModal: React.FC<NewEventModalProps> = ({
     onDelet(event._id);
   };
 
-  // Handlers for new non-registered client info
-  const addInfoNotClient = (client: ClientDTO) => {
-    setIsOpenNewNotClient(true);
-    setNewNotClient(client);
-  };
-
-  const saveNewNotClient = async () => {
-    try {
-      await postNotClientsHTTP(newNotClient);
-      setSelectedClients((prev) =>
-        prev.map((client) =>
-          client.email === newNotClient.email ? newNotClient : client
-        )
-      );
-      setClients((prev) => [...prev, newNotClient]);
-      setIsOpenNewNotClient(false);
-    } catch (error) {
-      console.error("Error saving new client:", error);
-    }
-  };
-
-  const handleInputNameNewNotClient = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setNewNotClient((prev) => ({ ...prev, name: e.target.value }));
-  };
 
   const handleOpenPrint = () => {
     onPrint();

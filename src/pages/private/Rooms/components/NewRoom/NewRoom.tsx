@@ -3,11 +3,10 @@ import NewRoomStyle from "./css/NewRoom.module.css";
 import {
   DtoRoom,
   IImage,
-  IRoom,
   newRoom,
   RoomDTO,
 } from "../../services/Rooms.service";
-import { IOpeningCloseHours, IOpeningDays } from "../OpeningHours/OpeningHours";
+import { IOpeningDays } from "../OpeningHours/OpeningHours";
 import deleteImage from "../../../../../assets/delete-svgrepo-com.svg";
 import editImage from "../../../../../assets/edit-3-svgrepo-com.svg";
 
@@ -47,7 +46,7 @@ const NewRoom: React.FC<NewRoomProps> = ({loadRoom, closeNewRoom}) => {
     typeRoom: ""
   });
 
-  const [openingHours, setOpeningHours] = useState<IOpeningDays>({
+  const [openingHours, _setOpeningHours] = useState<IOpeningDays>({
     monday: { isOpen: false, open: "", close: "" },
     tuesday: { isOpen: false, open: "", close: "" },
     wednesday: { isOpen: false, open: "", close: "" },
@@ -116,30 +115,6 @@ const NewRoom: React.FC<NewRoomProps> = ({loadRoom, closeNewRoom}) => {
     setFormData({ ...formData, [name]: Number.parseInt(value) });
   };
 
-  const dayParse = (d: string) => {
-    if (d == "monday") return "Lunes";
-    if (d == "tuesday") return "Martes";
-    if (d == "wednesday") return "Miércoles";
-    if (d == "thursday") return "Jueves";
-    if (d == "friday") return "Viernes";
-    if (d == "saturday") return "Sábado";
-    if (d == "sunday") return "Domingo";
-    return d;
-  };
-
-  const handleChangeDay = (
-    day: keyof IOpeningDays,
-    field: keyof IOpeningCloseHours,
-    value: string | boolean
-  ) => {
-    setOpeningHours({
-      ...openingHours,
-      [day]: {
-        ...openingHours[day],
-        [field]: value,
-      },
-    });
-  };
 
   const handleDeleteService = (service: string) => {
     setEditedServices(editedServices.filter((s) => s !== service));

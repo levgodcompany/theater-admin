@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import OpeningHoursFormStyle from "./css/OpeningHoursForm.module.css";
-import { useAppDispatch, useAppSelector } from "../../../../../../redux/hooks";
+import { useAppSelector } from "../../../../../../redux/hooks";
 import { editLocal, ILocal, IOpeningDays } from "../../../services/Local.service";
 
 interface OpeningHoursModalProps {
@@ -33,7 +33,6 @@ const OpeningHoursModal: React.FC<OpeningHoursModalProps> = ({
     saturday: { isOpen: false, open: "", close: "" },
   });
 
-  const dispatch = useAppDispatch();
 
   const openingHoursState = useAppSelector((state) => state.local.openingHours);
 

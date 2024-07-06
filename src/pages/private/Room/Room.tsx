@@ -2,18 +2,12 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { Header } from "../../../components/Header/Header";
 import InfoRoom from "../Rooms/components/Card_B/InfoRoom";
-import { IAppointment, IRoom } from "../Rooms/services/Rooms.service";
+import { IRoom } from "../Rooms/services/Rooms.service";
 import { getRoomHTTP } from "./service/Room.service";
 import AppointmentCalendar from "./components/AppointmentCalendar/AppointmentCalendar";
 import RoomStyle from "./css/Room.module.css"
 import Sidebar from "../../../components/Sidebar/Sidebar";
 
-interface ISelects {
-  id: string;
-  year: number;
-  month: number;
-  days: string[];
-}
 
 const Room = () => {
   const location = useLocation();
@@ -76,40 +70,6 @@ const Room = () => {
     services: [], // Lista de servicios que ofrece el local
   });
 
-  const [selectedDateList, setSelectedDateList] = useState<ISelects[]>([]);
-
-  // Función para convertir un array de IAppointment a un array de ISelects
-  const convertAppointmentsToSelects = (
-    appointments: IAppointment[]
-  ): ISelects[] => {
-    const selectsMap: { [key: string]: ISelects } = {};
-    appointments.forEach((appointment) => {
-      const date = new Date(appointment.date);
-      const year = date.getFullYear();
-      const month = date.getMonth() + 1; // Los meses en JavaScript son 0-indexados
-      const day = date.getDate().toString();
-      const fullDay = `${year}-${month}-${day}`;
-
-      const key = `${month}${year}`;
-
-      if (!selectsMap[key]) {
-        selectsMap[key] = {
-          id: appointment._id,
-          year: year,
-          month: month,
-          days: [fullDay],
-        };
-      } else {
-        // Agregar el día si no está ya en la lista
-        if (!selectsMap[key].days.includes(fullDay)) {
-          selectsMap[key].days.push(fullDay);
-        }
-      }
-    });
-
-    return Object.values(selectsMap);
-  };
-
   useEffect(() => {
     const get = async () => {
       if (idRoom) {
@@ -124,7 +84,6 @@ const Room = () => {
   }, []);
 
   useEffect(()=> {
-    setSelectedDateList(convertAppointmentsToSelects(room.availableAppointments))
   }, [room.availableAppointments])
 
   return (

@@ -46,10 +46,7 @@ const Shift: React.FC<IShiftProps> = ({_setOpeningCloseHoursTurnos}) => {
     updatedShifts.splice(index, 1);
     setOpeningCloseHoursTurnos(updatedShifts);
   };
-
-  const handleEditShift = (shift: IOpeningCloseHoursShiftsDTO) => {
-    setOpeningCloseHoursTurno(shift);
-  };
+;
 
   const handleAddShift = () => {
     setOpeningCloseHoursTurno({

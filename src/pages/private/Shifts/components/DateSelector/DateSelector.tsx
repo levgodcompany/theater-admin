@@ -28,31 +28,10 @@ const DateSelector: React.FC<IDateSelectorProps> = ({daysSelect}) => {
     return new Date(year, month + 1, 0).getDate();
   };
 
-  const handlePreviousMonth = () => {
-    setSelectedMonth((prevMonth) => (prevMonth === 0 ? 11 : prevMonth - 1));
-    setSelectedYear((prevYear) =>
-      selectedMonth === 0 ? prevYear - 1 : prevYear
-    );
-  };
-
-  const handleNextMonth = () => {
-    setSelectedMonth((prevMonth) => (prevMonth === 11 ? 0 : prevMonth + 1));
-    setSelectedYear((prevYear) =>
-      selectedMonth === 11 ? prevYear + 1 : prevYear
-    );
-  };
-
-  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedMonth(parseInt(event.target.value));
-  };
-
   useEffect(()=> {
     daysSelect(selectedDateList);
   }, [selectedDateList])
 
-  const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedYear(parseInt(event.target.value));
-  };
 
   const handleDayClick = (day: number) => {
     setSelectedDays((prevSelectedDays) => {

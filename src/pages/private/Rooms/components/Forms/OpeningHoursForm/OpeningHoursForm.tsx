@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import OpeningHoursFormStyle from "./css/OpeningHoursForm.module.css";
-import { useAppDispatch, useAppSelector } from "../../../../../../redux/hooks";
 import { IOpeningDays } from "../../OpeningHours/OpeningHours";
 import { IRoom, updateRoomHTTP } from "../../../services/Rooms.service";
 

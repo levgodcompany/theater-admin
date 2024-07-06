@@ -46,10 +46,6 @@ const OpeningHours: React.FC<OpeningHoursProps> = ({ idRoom, openingDays }) => {
     setIsModalOpen(false);
   };
 
-  const handleSubmit = (data: any) => {
-    console.log('Opening Hours Data:', data);
-    handleCloseModal();
-  };
 
   return (
     <div className={OpeningHoursStyle.opening_hours}>

@@ -12,10 +12,9 @@ interface IImage {
 interface ImageFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (images: IImage[]) => void;
 }
 
-const ImageFormModal: React.FC<ImageFormModalProps> = ({ isOpen, onClose, onSave }) => {
+const ImageFormModal: React.FC<ImageFormModalProps> = ({ isOpen, onClose }) => {
   const [localImages, setLocalImages] = useState<IImage[]>([]);
 
   const localImageState = useAppSelector(state => state.local.additionalImages);
@@ -40,11 +39,10 @@ const ImageFormModal: React.FC<ImageFormModalProps> = ({ isOpen, onClose, onSave
   };
 
   const editetLocal = async (local: Partial<ILocal>)=> {
-    const result = await  editLocal(local);
-    console.log(result);
+    await  editLocal(local);
   }
   const handleSave = () => {
-    onSave(localImages);
+
     editetLocal({
       additionalImages: localImages
     })

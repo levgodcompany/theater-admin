@@ -20,10 +20,6 @@ const ServicesList: React.FC<ServicesListProps> = ({ services, idRoom }) => {
     setIsModalOpen(false);
   };
 
-  const handleSubmit = (services: string[]) => {
-    console.log('Servicios Seleccionados:', services);
-    handleCloseModal();
-  };
 
 
 

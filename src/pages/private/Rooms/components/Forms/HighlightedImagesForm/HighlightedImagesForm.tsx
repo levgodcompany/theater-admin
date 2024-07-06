@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import HighlightedImagesFormStyle from "./css/HighlightedImagesForm.module.css";
-import { useAppSelector } from "../../../../../../redux/hooks";
 import { IRoom, updateRoomHTTP } from "../../../services/Rooms.service";
 
 interface IImage {

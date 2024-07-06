@@ -46,7 +46,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
 
   const [inputValuePrice, setInputValuePrice] = useState<number>(price);
   const [inputValueOrganizer, setInputValueOrganizer] = useState<string>("");
-  const [selectedClients, setSelectedClients] = useState<ClientDTO[]>([]);
+  const [selectedClients, _setSelectedClients] = useState<ClientDTO[]>([]);
   const [isAddDescription, setIsAddDescription] = useState<boolean>(false);
   const [selectedClientOrganizer, setSelectedClientOrganizer] =
     useState<ClientDTO>({
@@ -58,7 +58,7 @@ const NewEventModal: React.FC<NewEventModalProps> = ({
     });
 
 
-  const [clients, setClients] = useState<ClientDTO[]>([]);
+  const [_clients, setClients] = useState<ClientDTO[]>([]);
   const [clientsRegister, setClientsRegister] = useState<ClientDTO[]>([]);
 
   const [isAplicDto, setIsAplicDto] = useState<DtoRoom | null>(null);

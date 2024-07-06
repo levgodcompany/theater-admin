@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { getAllIdsRooms, RoomIdName } from "../../services/Shifts.service";
-import RoomsStyle from "./Rooms.module.css";
 
 interface IRoomProps {
     rooms: RoomIdName[];
@@ -8,7 +7,7 @@ interface IRoomProps {
 }
 
 const Rooms: React.FC<IRoomProps> = ({rooms, setRooms}) => {
-  const [selectRooms, setSelectRooms] = useState<RoomIdName[]>([]);
+  const [_selectRooms, setSelectRooms] = useState<RoomIdName[]>([]);
   const [selectRoom, setSelectRoom] = useState<RoomIdName>({
     id: "",
     name: ""
@@ -24,29 +23,6 @@ const Rooms: React.FC<IRoomProps> = ({rooms, setRooms}) => {
     getIds();
   }, []);
 
-  const renderRooms = ()=> {
-    return <>
-     <table>
-        <tbody>
-          <tr>
-            <th>id</th>
-            <th>Nombre</th>
-            <th>Eliminar</th>
-          </tr>
-          {
-            selectRooms.map(select => (<>
-            <tr>
-            <td>{select.id}</td>
-            <td>{select.name}</td>
-
-            </tr>
-
-            </>))
-          }
-        </tbody>
-      </table>
-    </>
-  }
 
   const onSelectRoom = (event: React.ChangeEvent<HTMLSelectElement>)=> {
     const sel = event.target.value.split("-/")

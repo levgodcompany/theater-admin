@@ -21,7 +21,7 @@ interface ISelects {
 }
 
 const ShiftsForm: React.FC = () => {
-  const [shifts, setShifts] = useState<IShiftsDTO>({
+  const [_shifts, setShifts] = useState<IShiftsDTO>({
     days: [],
     openingCloseHoursTurnos: [],
     roomId: [],
