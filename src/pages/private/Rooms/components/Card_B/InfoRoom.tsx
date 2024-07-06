@@ -74,7 +74,7 @@ const InfoRoom: React.FC<PropsCard> = ({
           {info("Capacidad:", capacity)}
           {info("Precio:", price)}
           {info("Medidas:", length == Width ? `${length}m²` : `${length}x${Width}mt`)}
-          {phone.length > 0 ?? info("Tel.:", phone) }
+          {phone.length > 0 ? info("Tel.:", phone) : <></> }
           
           <div className={InfoLocalStyles.container_dto}>
             <span>Dtos.</span>

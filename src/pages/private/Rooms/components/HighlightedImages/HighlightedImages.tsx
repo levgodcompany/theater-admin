@@ -11,15 +11,14 @@ interface HighlightedImagesProps {
 
 const HighlightedImages: React.FC<HighlightedImagesProps> = ({
   images,
-  idRoom
+  idRoom,
 }) => {
-
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
     <div className={HighlightedImagesStyle.container}>
       <div className={HighlightedImagesStyle.header}>
-        <h2 style={{fontSize: "16px"}} >Imagenes de la sala</h2>
+        <h2 style={{ fontSize: "16px" }}>Imagenes de la sala</h2>
         <img onClick={() => setModalOpen(true)} src={editImage} alt="" />
         <ImageFormModal
           images={images}
@@ -28,31 +27,29 @@ const HighlightedImages: React.FC<HighlightedImagesProps> = ({
           idRoom={idRoom}
         />
       </div>
-      {
-        images.length > 1 ?? <div className={HighlightedImagesStyle.highlighted_images_grid}>
-        {images.map((image, index) => (
-          <>
-            {image.url.length > 0 ? (
-              <>
-                <div
-                  key={index}
-                  className={HighlightedImagesStyle.highlighted_image}
-                >
-                  <img
-                    src={image.url}
-                    alt={image.description || `Image ${index + 1}`}
-                  />
-                 
-                </div>
-              </>
-            ) : (
-              <></>
-            )}
-          </>
-        ))}
-      </div>
-      }
-      
+      {images.length > 1 ? (
+        <div className={HighlightedImagesStyle.highlighted_images_grid}>
+          {images.map((image, index) => (
+            <>
+              {image.url.length > 0 ? (
+                <>
+                  <div
+                    key={index}
+                    className={HighlightedImagesStyle.highlighted_image}
+                  >
+                    <img
+                      src={image.url}
+                      alt={image.description || `Image ${index + 1}`}
+                    />
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+            </>
+          ))}
+        </div>
+      ) : <></> }
     </div>
   );
 };
