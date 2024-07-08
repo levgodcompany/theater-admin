@@ -24,9 +24,6 @@ export interface IClient {
     description: string; // Descripción del turno
   }
 
-  interface Props {
-    clients: IClient[]
-  }
 
 const Clients = ()=> {
 
@@ -35,8 +32,6 @@ const Clients = ()=> {
       
 
     const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
-
-    const [selectedAppointment, setSelectedAppointment] = useState<IAppointmentClient | null>(null);
 
 
     return <>

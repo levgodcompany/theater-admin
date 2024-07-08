@@ -433,12 +433,6 @@ const NewRoom: React.FC<NewRoomProps> = ({loadRoom, closeNewRoom}) => {
                       handleChangeImage(index, "url", e.target.value)
                     }
                   />
-                  <textarea
-                    value={image.description || ""}
-                    onChange={(e) =>
-                      handleChangeImage(index, "description", e.target.value)
-                    }
-                  ></textarea>
                   <button
                     onClick={() => handleRemoveImage(index)}
                     className={NewRoomStyle.remove_button}

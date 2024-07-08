@@ -57,9 +57,10 @@
 }
 
 .lavel_abierto, .label_hours_open, .label_hours_close, .label_data_room {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  flex-direction: column;
 }
 
 
