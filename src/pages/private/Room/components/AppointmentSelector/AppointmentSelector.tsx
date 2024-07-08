@@ -13,7 +13,7 @@ interface MyEvent extends Event {
 }
 
 const MyCalendar = () => {
-  const [events, setEvents] = useState<MyEvent[]>([
+  const [events, _setEvents] = useState<MyEvent[]>([
     {
       id: 0,
       title: 'Evento 1',
