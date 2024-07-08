@@ -29,7 +29,7 @@ const initialState: IOwner = {
       },
       resetOwner: (state) => {
         state = initialState
-        return initialState;
+        return state;
       },
     },
   });

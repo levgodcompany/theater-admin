@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Modal from "react-modal";
 import "./css/AppointmentModal.css";
-import { getClientAppointment, IAppointment, IClient } from "../../services/Rooms.service";
+import { IAppointment } from "../../services/Rooms.service";
 
 
 interface AppointmentModalProps {
