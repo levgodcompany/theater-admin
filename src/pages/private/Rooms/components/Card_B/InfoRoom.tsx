@@ -11,8 +11,8 @@ export interface PropsCard {
   description: string;
   price: number
   idRoom: string;
-  length: number;
-  Width: number;
+  length: string;
+  Width: string;
   dtos: DtoRoom[];
   typeRoom: string;
   loadRoom: ()=> void

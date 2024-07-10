@@ -11,8 +11,8 @@ interface FormModalProps {
   phone: string;
   capacity: number;
   description: string,
-  length: number;
-  Width: number;
+  length: string;
+  Width: string;
   preice: number;
   dtos: DtoRoom[];
   typeRoom: string;
@@ -26,8 +26,8 @@ interface FormData {
   phone: string;
   capacity: number;
   description: string;
-  length: number;
-  Width: number;
+  length: string;
+  Width: string;
   price: number;
   typeRoom: string;
 }
@@ -53,8 +53,8 @@ const LocalForm: React.FC<FormModalProps> = ({
     email: "",
     phone: "",
     capacity: 0,
-    length: 0,
-    Width: 0,
+    length: "",
+    Width: "",
     description: "",
     price: 0,
     typeRoom: ""

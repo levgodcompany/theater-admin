@@ -19,8 +19,8 @@ interface FormData {
   description: string;
   capacity: number;
   priceBase: number;
-  length: number;
-  Width: number;
+  length: string;
+  Width: string;
   typeRoom: string;
 }
 
@@ -41,8 +41,8 @@ const NewRoom: React.FC<NewRoomProps> = ({loadRoom, closeNewRoom}) => {
     description: "",
     capacity: 0,
     priceBase: 0,
-    length: 0,
-    Width: 0,
+    length: "",
+    Width: "",
     typeRoom: ""
   });
 
@@ -232,19 +232,19 @@ const NewRoom: React.FC<NewRoomProps> = ({loadRoom, closeNewRoom}) => {
             <label className={NewRoomStyle.label_data_room}>
               Largo *:
               <input
-                type="number"
+                type="text"
                 name="length"
                 value={formData.length}
-                onChange={handleChangeDataRoomNumber}
+                onChange={handleChangeDataRoom}
               />
             </label>
             <label className={NewRoomStyle.label_data_room}>
               Ancho *:
               <input
-                type="number"
+                type="text"
                 name="Width"
                 value={formData.Width}
-                onChange={handleChangeDataRoomNumber}
+                onChange={handleChangeDataRoom}
               />
             </label>
             <label className={NewRoomStyle.label_data_room}>
