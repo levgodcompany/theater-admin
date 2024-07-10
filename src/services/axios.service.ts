@@ -1,7 +1,7 @@
 import axios from "axios";
 import { initialStateToken, IToken, UserKey } from "../redux/slices/token.slice";
 import { getLocalStorage } from "../utilities/localStorage.utility";
-export const baseUrl = "https://api-teatro.onrender.com/api/v1/";
+export const baseUrl = "https://teatro-back.onrender.com/api/v1/";
 
 // Define tu token JWT
 const token: IToken = getLocalStorage(UserKey) ? JSON.parse(getLocalStorage(UserKey) as string) : initialStateToken
