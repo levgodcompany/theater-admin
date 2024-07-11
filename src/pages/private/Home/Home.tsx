@@ -11,6 +11,7 @@ import {
   ILocal,
 } from "./services/Home.service";
 import styles from "./css/Home.module.css"; // Estilos
+import formateador from "../../../utilities/formateador";
 
 
 
@@ -119,11 +120,6 @@ const Home = () => {
       </div>
     );
   };
-
-  const formateador = new Intl.NumberFormat("es-AR", {
-    style: "currency",
-    currency: "ARS",
-  });
 
   return (
     <>

@@ -3,6 +3,7 @@ import editImage from "../../../Local/assets/edit-3-svgrepo-com.svg";
 import { useState } from "react";
 import LocalForm from "../Forms/LocalForm/LocalForm";
 import { DtoRoom } from "../../services/Rooms.service";
+import formateador from "../../../../../utilities/formateador";
 export interface PropsCard {
   image: string;
   title: string;
@@ -72,7 +73,7 @@ const InfoRoom: React.FC<PropsCard> = ({
         <div className={InfoLocalStyles.user_info_info}>
           {info("Tipo de sala:", typeRoom)}
           {info("Capacidad:", capacity)}
-          {info("Precio:", price)}
+          {info("Precio:", formateador.format(price))}
           {info("Medidas:", length == Width ? `${length}m²` : `${length}x${Width}mt`)}
           {phone.length > 0 ? info("Tel.:", phone) : <></> }
           

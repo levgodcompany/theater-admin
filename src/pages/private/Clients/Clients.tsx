@@ -7,6 +7,7 @@ import {
 import { Header } from "../../../components/Header/Header";
 import styles from "./Clients.module.css";
 import ConfirCancelReservation from "../../../components/ConfirCancelReservation/ConfirCancelReservation";
+import formateador from "../../../utilities/formateador";
 
 interface IClientApps {
   id: string;
@@ -83,10 +84,6 @@ const Clients = () => {
     getLocalAndClients();
   }, []);
 
-  const formateador = new Intl.NumberFormat("es-AR", {
-    style: "currency",
-    currency: "ARS",
-  });
 
   const formatNumberDate = (num: number) => (num < 10 ? `0${num}` : `${num}`);
 
