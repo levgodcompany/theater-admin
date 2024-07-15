@@ -397,7 +397,14 @@ const Clients = () => {
                             Cancelar
                           </button>
                         ) : (
-                          ""
+                          <button
+                            className={styles.button_cancel}
+                            onClick={() =>
+                              cancelShifts(client.idRoom, client.appId)
+                            }
+                          >
+                            Eliminar
+                          </button>
                         )}
                       </td>
                     </tr>
